@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocalStorage } from '@/lib/useLocalStorage';
 import { DEFAULT_HABITS, ACHIEVEMENTS, THEMES, LEVELS } from '@/lib/habitData';
 import { calcStats, getLevel, updateChart } from '@/lib/statsEngine';
-import { useSession, signIn, signOut } from 'next-auth/react';
+// next-auth/react importu kaldırıldı, local-first mock auth yapısına geçildi
 import HomeTab from '@/app/components/HomeTab';
 import DashboardTab from '@/app/components/DashboardTab';
 import HabitsTab from '@/app/components/HabitsTab';
@@ -100,7 +100,12 @@ function makeChart() {
 }
 
 export default function Home() {
-  const { data: session, status } = useSession();
+  const [session, setSession] = useLocalStorage('cf-session', null);
+  const [status, setStatus] = useState('loading');
+
+  useEffect(() => {
+    setStatus(session ? 'authenticated' : 'unauthenticated');
+  }, [session]);
   const [habits, setHabits] = useLocalStorage('cf-habits', DEFAULT_HABITS);
   const [chart, setChart] = useLocalStorage('cf-chart', makeChart());
   const [achi, setAchi] = useLocalStorage('cf-achi', ACHIEVEMENTS.map(a => ({ ...a, unlocked: false })));
@@ -181,13 +186,22 @@ export default function Home() {
 
           <button 
             type="button" 
-            onClick={() => signIn('google', { callbackUrl: window.location.origin })} 
+            onClick={() => {
+              const mockUser = { 
+                user: { 
+                  name: 'Pijamalı Badici', 
+                  email: 'badici@turcodevelop.com', 
+                  image: '/images/app_logo.png?v=3' 
+                } 
+              };
+              setSession(mockUser);
+            }} 
             className="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-gradient-to-r from-[#FFD700] to-[#CD7F32] hover:brightness-110 active:scale-95 text-black font-extrabold text-sm transition-all cursor-pointer shadow-[0_8px_24px_rgba(255,215,0,0.15)]"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.113-5.111 4.113-3.418 0-6.19-2.772-6.19-6.19 0-3.418 2.772-6.19 6.19-6.19 1.57 0 2.996.59 4.095 1.548l3.155-3.155C19.123 2.012 15.932 1 12.24 1 5.922 1 1 5.922 1 12.24s4.922 11.24 11.24 11.24c6.318 0 11.24-4.922 11.24-11.24 0-.795-.078-1.57-.217-2.315H12.24z"/>
             </svg>
-            Google ile Giriş Yap / Kaydol
+            Google ile Giriş Yap / Kaydol (Tek Tıkla Giriş)
           </button>
         </div>
       </div>
@@ -223,7 +237,7 @@ export default function Home() {
             </div>
 
             <button 
-              onClick={() => signOut({ callbackUrl: window.location.origin })}
+              onClick={() => setSession(null)}
               className="bg-white/5 hover:bg-white/10 text-[#FFD700] border border-[#FFD700]/25 text-[10px] font-extrabold px-3 py-2 rounded-xl transition-all cursor-pointer"
             >
               HESAP DEĞİŞTİR / ÇIK
