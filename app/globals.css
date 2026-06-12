@@ -234,3 +234,104 @@ body {
 .glitch:hover {
   animation: glitch 0.3s ease-in-out;
 }
+
+/* === macOS DOCK STYLE & ANIMATIONS === */
+.mac-dock-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 10px 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  width: fit-content;
+  margin: 0 auto;
+  gap: 8px;
+  position: relative;
+  z-index: 50;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mac-dock-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 16px;
+  width: 48px;
+  height: 48px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mac-dock-item.active {
+  color: #FFD700;
+  background: rgba(255, 215, 0, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.mac-dock-item .tooltip {
+  position: absolute;
+  bottom: -40px;
+  background: rgba(11, 15, 25, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  font-size: 10px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 6px;
+  opacity: 0;
+  transform: translateY(-5px);
+  pointer-events: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.mac-dock-item:hover .tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Indicators under active items */
+.mac-dock-indicator {
+  position: absolute;
+  bottom: 3px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #FFD700;
+  box-shadow: 0 0 8px #FFD700;
+}
+
+/* === TAB TRANSITION ANIMATIONS === */
+.tab-transition-wrapper {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.tab-transition-container {
+  display: flex;
+  width: 100%;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tab-panel {
+  flex-shrink: 0;
+  width: 100%;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tab-panel.active {
+  opacity: 1;
+  transform: scale(1);
+}
