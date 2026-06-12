@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocalStorage } from '@/lib/useLocalStorage';
 import { DEFAULT_HABITS, ACHIEVEMENTS, THEMES, LEVELS } from '@/lib/habitData';
 import { calcStats, getLevel, updateChart } from '@/lib/statsEngine';
+import { useSession, signIn, signOut } from 'next-auth/react';
 import HomeTab from '@/app/components/HomeTab';
 import DashboardTab from '@/app/components/DashboardTab';
 import HabitsTab from '@/app/components/HabitsTab';
@@ -40,7 +41,7 @@ const TABS = [
     tooltip: 'Winler',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 002-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
       </svg>
     )
   },
@@ -99,6 +100,7 @@ function makeChart() {
 }
 
 export default function Home() {
+  const { data: session, status } = useSession();
   const [habits, setHabits] = useLocalStorage('cf-habits', DEFAULT_HABITS);
   const [chart, setChart] = useLocalStorage('cf-chart', makeChart());
   const [achi, setAchi] = useLocalStorage('cf-achi', ACHIEVEMENTS.map(a => ({ ...a, unlocked: false })));
@@ -107,7 +109,7 @@ export default function Home() {
   const [tab, setTab] = useState('home');
   const [share, setShare] = useState(false);
 
-  // macOS Dock Büyütme Efekti için Hover State'i
+  // macOS Dock Büyütme Efekti için Hover State
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   useEffect(() => { 
@@ -144,7 +146,53 @@ export default function Home() {
   // Tab indeksini bul
   const activeIndex = useMemo(() => TABS.findIndex(t => t.id === tab), [tab]);
 
-  if (!mounted) return <div className="min-h-screen flex items-center justify-center"><p style={{color:'var(--text-muted)'}}>Yükleniyor...</p></div>;
+  if (!mounted || status === 'loading') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#050505]">
+        <p className="text-sm font-bold text-zinc-400 animate-pulse">ChadFocus Yükleniyor...</p>
+      </div>
+    );
+  }
+
+  // === GOOGLE AUTH WALL (Bariyer) ===
+  if (status === 'unauthenticated') {
+    return (
+      <div 
+        className="min-h-screen bg-cover bg-center flex items-center justify-center relative p-4"
+        style={{ backgroundImage: "url('/images/chad_collage_bg.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-[#0B0F19]/85 z-0" />
+        
+        <div className="relative z-10 w-full max-w-md p-8 bg-zinc-950/80 border border-zinc-800 backdrop-blur-md rounded-3xl text-center shadow-[0_20px_80px_rgba(0,0,0,0.55)] space-y-6">
+          <div className="flex flex-col items-center">
+            <img src="/images/app_logo.png?v=3" alt="ChadFocus Logo" className="w-20 h-20 rounded-2xl object-cover mb-4" />
+            <h1 className="text-3xl font-black tracking-tight" style={{ background: 'linear-gradient(90deg, #FFD700, #CD7F32)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              CHADFOCUS
+            </h1>
+            <p className="text-[10px] text-[#FFE082] font-bold tracking-[0.25em] uppercase mt-1">Pijamalı Badici Protokolü</p>
+          </div>
+
+          <div className="space-y-2">
+            <h2 className="text-xl font-bold text-white">Gelişime İlk Adımı At</h2>
+            <p className="text-xs text-zinc-400 leading-relaxed max-w-xs mx-auto">
+              Disiplinini görselleştirmek ve verilerini mobil/masaüstü cihazlarınla eşitlemek için Google hesabınla güvenli giriş yap.
+            </p>
+          </div>
+
+          <button 
+            type="button" 
+            onClick={() => signIn('google', { callbackUrl: window.location.origin })} 
+            className="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-gradient-to-r from-[#FFD700] to-[#CD7F32] hover:brightness-110 active:scale-95 text-black font-extrabold text-sm transition-all cursor-pointer shadow-[0_8px_24px_rgba(255,215,0,0.15)]"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.113-5.111 4.113-3.418 0-6.19-2.772-6.19-6.19 0-3.418 2.772-6.19 6.19-6.19 1.57 0 2.996.59 4.095 1.548l3.155-3.155C19.123 2.012 15.932 1 12.24 1 5.922 1 1 5.922 1 12.24s4.922 11.24 11.24 11.24c6.318 0 11.24-4.922 11.24-11.24 0-.795-.078-1.57-.217-2.315H12.24z"/>
+            </svg>
+            Google ile Giriş Yap / Kaydol
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)' }} className="pb-16">
@@ -153,19 +201,33 @@ export default function Home() {
         {/* Header */}
         <header className="flex items-center justify-between mb-8 pb-4 border-b border-zinc-900/30">
           <div className="flex items-center gap-3">
-            <img src="/images/app_logo.png" alt="ChadFocus Logo" className="w-8 h-8 rounded-lg object-cover" />
+            <img src="/images/app_logo.png?v=3" alt="ChadFocus Logo" className="w-8 h-8 rounded-lg object-cover" />
             <div>
               <h1 className="text-lg font-black tracking-tight" style={{ background: 'linear-gradient(90deg, #FFD700, #CD7F32)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 CHADFOCUS
               </h1>
-              <p className="text-[9px] font-bold tracking-wider" style={{ color: 'var(--text-muted)' }}>Disiplin Takip Sistemi</p>
+              <p className="text-[9px] font-bold tracking-wider" style={{ color: 'var(--text-muted)' }}>Pijamalı Badici Protokolü</p>
             </div>
           </div>
-          <div className="flex items-center gap-4 bg-white/5 border border-white/5 px-4 py-2 rounded-xl">
-            <div className="text-right">
-              <span className="text-xs font-bold block text-amber-500">Seviye {stats.level}</span>
-              <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{stats.xp} XP</span>
+
+          {/* Profil ve Oturumu Kapatma Butonu */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 bg-white/5 border border-white/5 px-3 py-1.5 rounded-2xl">
+              {session?.user?.image && (
+                <img src={session.user.image} alt={session.user.name} className="w-7 h-7 rounded-full border border-[#FFD700]/30" />
+              )}
+              <div className="hidden md:block text-left">
+                <div className="text-[9px] text-zinc-400 font-medium">Hoş Geldin</div>
+                <div className="text-[10px] font-bold text-zinc-100 leading-none">{session?.user?.name}</div>
+              </div>
             </div>
+
+            <button 
+              onClick={() => signOut({ callbackUrl: window.location.origin })}
+              className="bg-white/5 hover:bg-white/10 text-[#FFD700] border border-[#FFD700]/25 text-[10px] font-extrabold px-3 py-2 rounded-xl transition-all cursor-pointer"
+            >
+              HESAP DEĞİŞTİR / ÇIK
+            </button>
           </div>
         </header>
 
@@ -173,7 +235,6 @@ export default function Home() {
         <nav className="mb-8">
           <div className="mac-dock-container">
             {TABS.map((t, idx) => {
-              // Büyütme hesaplaması
               let scaleClass = 'scale-100';
               if (hoveredIndex === idx) {
                 scaleClass = 'scale-130 -translate-y-2';
