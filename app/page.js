@@ -222,6 +222,8 @@ export default function Home() {
         setChart(initialChart);
         setAchi(initialAchi);
       }
+    }, (error) => {
+      console.warn("Firestore listener error (usually safe during auth changes):", error);
     });
     return () => unsubscribe();
   }, [user]);

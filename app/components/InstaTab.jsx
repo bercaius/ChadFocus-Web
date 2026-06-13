@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ExternalLink, Link as LinkIcon, CheckCircle, ShieldAlert } from 'lucide-react';
+import { ExternalLink, Link as LinkIcon, CheckCircle, ShieldAlert, Instagram } from 'lucide-react';
 
 export default function InstaTab() {
   const [username, setUsername] = useState('bercaius.dev'); // Default creator
