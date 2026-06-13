@@ -1,6 +1,6 @@
 'use client';
 
-export default function SettingsTab({ theme, themes, onChangeTheme, onReset, user }) {
+export default function SettingsTab({ theme, themes, onChangeTheme, onReset, user, wallpaper, setWallpaper, bgOpacity, setBgOpacity }) {
   return (
     <div className="space-y-4">
       {/* Profil */}
@@ -46,6 +46,37 @@ export default function SettingsTab({ theme, themes, onChangeTheme, onReset, use
               <span className="text-sm">{t.icon}</span>
               <div className="text-xs font-semibold mt-1" style={{color: theme === t.id ? '#FFD700' : 'var(--text-secondary)'}}>{t.label}</div>
               <div className="text-[9px] mt-0.5" style={{color:'var(--text-muted)'}}>{t.desc}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Görünüm & Saydamlık */}
+      <div className="glass-card rounded-xl p-4">
+        <span className="text-xs font-semibold tracking-wider" style={{color:'var(--text-muted)'}}>GÖRÜNÜM & ARKA PLAN</span>
+        
+        <div className="mt-4 mb-2">
+          <div className="flex justify-between text-xs mb-2">
+            <span style={{color:'var(--text-secondary)'}}>Arka Plan Karartması (Opaklık)</span>
+            <span style={{color:'var(--accent-color)'}}>{Math.round(bgOpacity * 100)}%</span>
+          </div>
+          <input 
+            type="range" 
+            min="0" max="100" 
+            value={bgOpacity * 100} 
+            onChange={(e) => setBgOpacity(e.target.value / 100)}
+            className="w-full h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-yellow-500"
+          />
+        </div>
+
+        <div className="grid grid-cols-4 gap-2 mt-4">
+          {['/images/wallpaper_1.png?v=3', '/images/wallpaper_2.png?v=3', '/images/wallpaper_3.png?v=3', '/images/wallpaper_4.png?v=3'].map((img, i) => (
+            <button 
+              key={i} 
+              onClick={() => setWallpaper(img)}
+              className={`h-12 rounded-lg overflow-hidden border transition-all ${wallpaper === img ? 'border-[var(--accent-color)] scale-95 opacity-100' : 'border-transparent opacity-50 hover:opacity-100'}`}
+            >
+              <img src={img} className="w-full h-full object-cover" />
             </button>
           ))}
         </div>

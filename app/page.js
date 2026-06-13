@@ -168,8 +168,9 @@ export default function Home() {
   const [showWeb, setShowWeb] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
 
-  // Kalıcı Duvar Kağıdı Seçimi
+  // Kalıcı Duvar Kağıdı ve Saydamlık Seçimi
   const [wallpaper, setWallpaper] = useLocalStorage('cf-wallpaper', '/images/wallpaper_1.png?v=3');
+  const [bgOpacity, setBgOpacity] = useLocalStorage('cf-bg-opacity', 0.85);
 
   // macOS Dock Büyütme Efekti
   const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -350,8 +351,8 @@ export default function Home() {
         className="min-h-screen bg-cover bg-center flex flex-col justify-between relative p-6 md:p-12 transition-all duration-1000"
         style={{ backgroundImage: `url('${wallpaper}')` }}
       >
-        {/* Karartma degrade kaplama */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/90 z-0" />
+        {/* Karartma degrade kaplama (saydamlık ayarlı) */}
+        <div className="absolute inset-0 z-0 transition-opacity duration-300" style={{ backgroundColor: `rgba(0, 0, 0, ${bgOpacity})` }} />
 
         {/* Header (Sol Logo, Sağ Profil) */}
         <header className="relative z-10 flex items-center justify-between">
@@ -551,7 +552,7 @@ export default function Home() {
 
             {/* Panel 5: Settings */}
             <div className={`tab-panel ${tab === 'settings' ? 'active' : ''}`}>
-              <SettingsTab theme={theme} themes={THEMES} onChangeTheme={changeTheme} onReset={resetAll} user={user} />
+              <SettingsTab theme={theme} themes={THEMES} onChangeTheme={changeTheme} onReset={resetAll} user={user} wallpaper={wallpaper} setWallpaper={setWallpaper} bgOpacity={bgOpacity} setBgOpacity={setBgOpacity} />
             </div>
 
             {/* Panel 6: News */}
