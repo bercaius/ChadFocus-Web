@@ -4,8 +4,10 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocalStorage } from '@/lib/useLocalStorage';
 import { DEFAULT_HABITS, ACHIEVEMENTS, THEMES, LEVELS } from '@/lib/habitData';
 import { calcStats, getLevel, updateChart } from '@/lib/statsEngine';
-// next-auth/react importu kaldırıldı, local-first mock auth yapısına geçildi
-import HomeTab from '@/app/components/HomeTab';
+import { useAuth } from '@/app/components/AuthProvider';
+import { db } from '@/lib/firebase';
+import { doc, setDoc, onSnapshot } from 'firebase/firestore';
+
 import DashboardTab from '@/app/components/DashboardTab';
 import HabitsTab from '@/app/components/HabitsTab';
 import AnalyticsTab from '@/app/components/AnalyticsTab';
@@ -15,16 +17,6 @@ import SettingsTab from '@/app/components/SettingsTab';
 import ShareModal from '@/app/components/ShareModal';
 
 const TABS = [
-  { 
-    id: 'home', 
-    label: 'Ana Sayfa', 
-    tooltip: 'Ana Sayfa',
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-      </svg>
-    )
-  },
   { 
     id: 'dash', 
     label: 'Kontrol Paneli', 
@@ -89,6 +81,13 @@ const TABS = [
   }
 ];
 
+const WALLPAPERS = [
+  { id: 'w1', img: '/images/wallpaper_1.png?v=3', name: 'Efsane Klasik' },
+  { id: 'w2', img: '/images/wallpaper_2.png?v=3', name: 'Hit Kürü' },
+  { id: 'w3', img: '/images/wallpaper_3.png?v=3', name: 'Disiplin Profili' },
+  { id: 'w4', img: '/images/wallpaper_4.png?v=3', name: 'Kusursuz Zafer' }
+];
+
 function makeChart() {
   const d = [];
   const t = new Date();
@@ -100,21 +99,22 @@ function makeChart() {
 }
 
 export default function Home() {
-  const [session, setSession] = useLocalStorage('cf-session', null);
-  const [status, setStatus] = useState('loading');
-
-  useEffect(() => {
-    setStatus(session ? 'authenticated' : 'unauthenticated');
-  }, [session]);
-  const [habits, setHabits] = useLocalStorage('cf-habits', DEFAULT_HABITS);
-  const [chart, setChart] = useLocalStorage('cf-chart', makeChart());
-  const [achi, setAchi] = useLocalStorage('cf-achi', ACHIEVEMENTS.map(a => ({ ...a, unlocked: false })));
+  const { user, loading: authLoading, signInWithGoogle, logout } = useAuth();
+  const [habits, setHabits] = useState(DEFAULT_HABITS);
+  const [chart, setChart] = useState(makeChart());
+  const [achi, setAchi] = useState(ACHIEVEMENTS.map(a => ({ ...a, unlocked: false })));
   const [theme, setTheme] = useLocalStorage('cf-theme', 'cyberpunk');
   const [mounted, setMounted] = useState(false);
-  const [tab, setTab] = useState('home');
+  const [tab, setTab] = useState('dash');
   const [share, setShare] = useState(false);
+  
+  // Elit Landing Arayüzü Durumu (showWeb=false iken landing gösterilir)
+  const [showWeb, setShowWeb] = useState(false);
 
-  // macOS Dock Büyütme Efekti için Hover State
+  // Kalıcı Duvar Kağıdı Seçimi
+  const [wallpaper, setWallpaper] = useLocalStorage('cf-wallpaper', '/images/wallpaper_1.png?v=3');
+
+  // macOS Dock Büyütme Efekti
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   useEffect(() => { 
@@ -122,100 +122,283 @@ export default function Home() {
     document.documentElement.setAttribute('data-theme', theme); 
   }, [theme]);
 
+  // Firestore Eşitleme Dinleyicisi
+  useEffect(() => {
+    if (!user) return;
+    const userDocRef = doc(db, 'users', user.uid);
+    const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        if (data.habits) setHabits(data.habits);
+        if (data.chart) setChart(data.chart);
+        if (data.achi) setAchi(data.achi);
+      } else {
+        const initialAchi = ACHIEVEMENTS.map(a => ({ ...a, unlocked: false }));
+        const initialChart = makeChart();
+        setDoc(userDocRef, {
+          habits: DEFAULT_HABITS,
+          chart: initialChart,
+          achi: initialAchi
+        });
+        setHabits(DEFAULT_HABITS);
+        setChart(initialChart);
+        setAchi(initialAchi);
+      }
+    });
+    return () => unsubscribe();
+  }, [user]);
+
+  // Firestore Veri Kaydetme Fonksiyonu
+  const saveData = async (updatedHabits, updatedChart, updatedAchi) => {
+    if (!user) return;
+    const userDocRef = doc(db, 'users', user.uid);
+    try {
+      await setDoc(userDocRef, {
+        habits: updatedHabits || habits,
+        chart: updatedChart || chart,
+        achi: updatedAchi || achi
+      }, { merge: true });
+    } catch (error) {
+      console.error("Bulut senkronizasyon hatası:", error);
+    }
+  };
+
   const stats = useMemo(() => calcStats(habits, chart, achi), [habits, chart, achi]);
   const chad = useMemo(() => getLevel(stats.maxStreak, LEVELS), [stats.maxStreak]);
 
+  // Checkbox Tik Atma
   const toggle = useCallback((id) => {
-    setHabits(p => {
-      const u = p.map(h => h.id === id ? { ...h, done: !h.done } : h);
-      const all = u.every(h => h.done);
-      const r = all ? u.map(h => ({ ...h, streak: h.done ? h.streak + 1 : 0, bestStreak: h.done ? Math.max(h.streak + 1, h.bestStreak) : h.bestStreak })) : u;
-      setTimeout(() => { setChart(c => updateChart(r, c)); }, 0);
-      return r;
-    });
-  }, [setHabits, setChart]);
+    const updatedHabits = habits.map(h => h.id === id ? { ...h, done: !h.done } : h);
+    const all = updatedHabits.every(h => h.done);
+    const finalHabits = all ? updatedHabits.map(h => ({ 
+      ...h, 
+      streak: h.done ? h.streak + 1 : 0, 
+      bestStreak: h.done ? Math.max(h.streak + 1, h.bestStreak) : h.bestStreak 
+    })) : updatedHabits;
+    
+    const finalChart = updateChart(finalHabits, chart);
+    saveData(finalHabits, finalChart, null);
+  }, [habits, chart, user]);
 
-  const rename = useCallback((id, name) => setHabits(p => p.map(h => h.id === id ? { ...h, name } : h)), [setHabits]);
+  // Alışkanlık Ekleme (Rutin Oluşturma)
+  const addHabit = useCallback((name, cat) => {
+    const newHabit = {
+      id: 'h_' + Date.now(),
+      name,
+      cat,
+      done: false,
+      streak: 0,
+      bestStreak: 0
+    };
+    const updated = [...habits, newHabit];
+    saveData(updated, null, null);
+  }, [habits, user]);
 
+  // Alışkanlık Silme
+  const deleteHabit = useCallback((id) => {
+    const updated = habits.filter(h => h.id !== id);
+    saveData(updated, null, null);
+  }, [habits, user]);
+
+  // Ad Değiştirme
+  const rename = useCallback((id, name) => {
+    const updated = habits.map(h => h.id === id ? { ...h, name } : h);
+    saveData(updated, null, null);
+  }, [habits, user]);
+
+  // Reset
   const resetAll = useCallback(() => {
+    const initialChart = makeChart();
+    const initialAchi = ACHIEVEMENTS.map(a => ({ ...a, unlocked: false }));
     setHabits(DEFAULT_HABITS);
-    setChart(makeChart());
-    setAchi(ACHIEVEMENTS.map(a => ({ ...a, unlocked: false })));
-  }, [setHabits, setChart, setAchi]);
+    setChart(initialChart);
+    setAchi(initialAchi);
+    saveData(DEFAULT_HABITS, initialChart, initialAchi);
+  }, [user]);
 
   const changeTheme = useCallback((t) => {
     setTheme(t);
     document.documentElement.setAttribute('data-theme', t);
   }, [setTheme]);
 
-  // Tab indeksini bul
+  // Tab indeks bul
   const activeIndex = useMemo(() => TABS.findIndex(t => t.id === tab), [tab]);
 
-  if (!mounted || status === 'loading') {
+  if (!mounted || authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#050505]">
-        <p className="text-sm font-bold text-zinc-400 animate-pulse">ChadFocus Yükleniyor...</p>
+        <p className="text-xs font-black tracking-widest text-zinc-500 animate-pulse">CHADFOCUS YÜKLENİYOR...</p>
       </div>
     );
   }
 
-  // === GOOGLE AUTH WALL (Bariyer) ===
-  if (status === 'unauthenticated') {
+  // ==================== 1. GOOGLE AUTH BARİYERİ (GOOGLE LOGIN) ====================
+  if (!user) {
     return (
       <div 
-        className="min-h-screen bg-cover bg-center flex items-center justify-center relative p-4"
-        style={{ backgroundImage: "url('/images/chad_collage_bg.jpg')" }}
+        className="min-h-screen bg-cover bg-center flex items-center justify-center relative p-4 transition-all duration-1000"
+        style={{ backgroundImage: "url('/images/wallpaper_1.png?v=3')" }}
       >
-        <div className="absolute inset-0 bg-[#0B0F19]/85 z-0" />
+        <div className="absolute inset-0 bg-black/90 backdrop-blur-md z-0" />
         
-        <div className="relative z-10 w-full max-w-md p-8 bg-zinc-950/80 border border-zinc-800 backdrop-blur-md rounded-3xl text-center shadow-[0_20px_80px_rgba(0,0,0,0.55)] space-y-6">
+        <div className="relative z-10 w-full max-w-sm p-8 bg-zinc-950/70 border border-zinc-900 backdrop-blur-xl rounded-3xl text-center shadow-[0_20px_100px_rgba(0,0,0,0.85)] space-y-6">
           <div className="flex flex-col items-center">
-            <img src="/images/app_logo.png?v=3" alt="ChadFocus Logo" className="w-20 h-20 rounded-2xl object-cover mb-4" />
-            <h1 className="text-3xl font-black tracking-tight" style={{ background: 'linear-gradient(90deg, #FFD700, #CD7F32)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            {/* Elit Siyah-Beyaz Logo */}
+            <img 
+              src="/images/app_logo.png?v=3" 
+              alt="ChadFocus Logo" 
+              className="w-24 h-24 object-cover mb-4 filter grayscale brightness-90 hover:grayscale-0 transition-all duration-500" 
+            />
+            <h1 className="text-2xl font-black tracking-widest text-white uppercase">
               CHADFOCUS
             </h1>
-            <p className="text-[10px] text-[#FFE082] font-bold tracking-[0.25em] uppercase mt-1">Pijamalı Badici Protokolü</p>
+            <p className="text-[9px] text-zinc-500 font-bold tracking-[0.25em] uppercase mt-1">Pijamalı Badici Protokolü</p>
           </div>
 
-          <div className="space-y-2">
-            <h2 className="text-xl font-bold text-white">Gelişime İlk Adımı At</h2>
-            <p className="text-xs text-zinc-400 leading-relaxed max-w-xs mx-auto">
-              Disiplinini görselleştirmek ve verilerini mobil/masaüstü cihazlarınla eşitlemek için Google hesabınla güvenli giriş yap.
+          <div className="space-y-1">
+            <h2 className="text-md font-bold text-zinc-200">Gelişime İlk Adımı At</h2>
+            <p className="text-[11px] text-zinc-500 leading-relaxed max-w-xs mx-auto">
+              Disiplinini takip etmek ve tüm cihazlarınla bulut üzerinden senkronize olmak için Google hesabınla güvenli giriş yap.
             </p>
           </div>
 
           <button 
             type="button" 
-            onClick={() => {
-              const mockUser = { 
-                user: { 
-                  name: 'Pijamalı Badici', 
-                  email: 'badici@turcodevelop.com', 
-                  image: '/images/app_logo.png?v=3' 
-                } 
-              };
-              setSession(mockUser);
-            }} 
-            className="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-gradient-to-r from-[#FFD700] to-[#CD7F32] hover:brightness-110 active:scale-95 text-black font-extrabold text-sm transition-all cursor-pointer shadow-[0_8px_24px_rgba(255,215,0,0.15)]"
+            onClick={signInWithGoogle} 
+            className="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-zinc-100 hover:bg-white text-black font-black text-xs transition-all cursor-pointer shadow-lg active:scale-95"
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.113-5.111 4.113-3.418 0-6.19-2.772-6.19-6.19 0-3.418 2.772-6.19 6.19-6.19 1.57 0 2.996.59 4.095 1.548l3.155-3.155C19.123 2.012 15.932 1 12.24 1 5.922 1 1 5.922 1 12.24s4.922 11.24 11.24 11.24c6.318 0 11.24-4.922 11.24-11.24 0-.795-.078-1.57-.217-2.315H12.24z"/>
             </svg>
-            Google ile Giriş Yap / Kaydol (Tek Tıkla Giriş)
+            GOOGLE İLE GİRİŞ YAP
           </button>
         </div>
       </div>
     );
   }
 
+  // ==================== 2. ELİT TEK EKRAN LANDİNG / GİRİŞ EKRANI ====================
+  if (!showWeb) {
+    return (
+      <div 
+        className="min-h-screen bg-cover bg-center flex flex-col justify-between relative p-6 md:p-12 transition-all duration-1000"
+        style={{ backgroundImage: `url('${wallpaper}')` }}
+      >
+        {/* Karartma degrade kaplama */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/90 z-0" />
+
+        {/* Header (Sol Logo, Sağ Profil) */}
+        <header className="relative z-10 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img 
+              src="/images/app_logo.png?v=3" 
+              alt="Logo" 
+              className="w-12 h-12 object-cover filter grayscale contrast-125" 
+            />
+            <div>
+              <h1 className="text-md font-black tracking-widest text-zinc-100 uppercase">CHADFOCUS</h1>
+              <p className="text-[8px] text-zinc-500 font-bold tracking-wider uppercase">Pijamalı Badici Protokolü</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 bg-white/5 border border-white/5 px-3 py-1.5 rounded-2xl backdrop-blur-md">
+              {user.image && (
+                <img src={user.image} alt={user.name} className="w-6 h-6 rounded-full border border-white/20 filter grayscale" />
+              )}
+              <div className="hidden sm:block text-left">
+                <div className="text-[8px] text-zinc-500 font-bold uppercase">Badici</div>
+                <div className="text-[10px] font-black text-zinc-200">{user.name}</div>
+              </div>
+            </div>
+            <button 
+              onClick={logout}
+              className="bg-white/5 hover:bg-white/10 text-zinc-400 border border-white/10 text-[9px] font-black px-3 py-2 rounded-xl transition-all cursor-pointer"
+            >
+              ÇIK
+            </button>
+          </div>
+        </header>
+
+        {/* Center Main Content */}
+        <main className="relative z-10 max-w-4xl mx-auto text-center my-auto py-12 space-y-8">
+          <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase leading-none max-w-3xl mx-auto">
+            ORTALAMA YAŞAMDAN KURTUL, <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-200 to-zinc-500">POTANSİYELİNİ ZİRVEYE TAŞ.</span>
+          </h2>
+          
+          <p className="text-xs md:text-sm text-zinc-500 max-w-lg mx-auto font-medium leading-relaxed">
+            Grind ritmini her an yanında taşı. Gereksiz her şeyi dışarıda bırak; sadece hedeflerin, rutinlerin ve demir gibi bir irade.
+          </p>
+
+          {/* Elit Butonlar Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto pt-4">
+            <a 
+              href="https://github.com/bercaius/ChadFocus/releases/latest" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="group flex flex-col justify-center items-center p-5 rounded-2xl bg-zinc-950/50 border border-white/5 hover:border-white/20 hover:bg-zinc-900/40 transition-all duration-300 active:scale-95 shadow-xl backdrop-blur-sm"
+            >
+              <span className="text-xl mb-1">💻</span>
+              <span className="text-xs font-black text-white uppercase tracking-wider">MASAÜSTÜ SÜRÜMÜ</span>
+              <span className="text-[9px] text-zinc-500 font-bold mt-1">Windows EXE / MSI indir</span>
+            </a>
+
+            <a 
+              href="https://github.com/bercaius/ChadFocus/raw/main/web/ChadFocus.apk" 
+              className="group flex flex-col justify-center items-center p-5 rounded-2xl bg-zinc-950/50 border border-white/5 hover:border-white/20 hover:bg-zinc-900/40 transition-all duration-300 active:scale-95 shadow-xl backdrop-blur-sm"
+            >
+              <span className="text-xl mb-1">📱</span>
+              <span className="text-xs font-black text-white uppercase tracking-wider">MOBİL SÜRÜMÜ</span>
+              <span className="text-[9px] text-zinc-500 font-bold mt-1">Android APK yükle</span>
+            </a>
+
+            <button 
+              onClick={() => setShowWeb(true)}
+              className="group flex flex-col justify-center items-center p-5 rounded-2xl bg-gradient-to-r from-zinc-100 to-zinc-300 hover:brightness-110 transition-all duration-300 active:scale-95 shadow-xl shadow-white/5 cursor-pointer"
+            >
+              <span className="text-xl mb-1">🌐</span>
+              <span className="text-xs font-black text-black uppercase tracking-wider">WEB SÜRÜMÜNÜ KULLAN</span>
+              <span className="text-[9px] text-zinc-800 font-bold mt-1">Tarayıcıda anında başla</span>
+            </button>
+          </div>
+        </main>
+
+        {/* Footer (Motivasyon Duvar Kağıtları Seçici) */}
+        <footer className="relative z-10 w-full max-w-4xl mx-auto pt-6 border-t border-white/5 space-y-3">
+          <div className="flex justify-between items-center px-1">
+            <span className="text-[9px] font-black tracking-widest text-zinc-500 uppercase">MOTİVASYON DUVAR KAĞITLARI</span>
+            <span className="text-[9px] text-zinc-600 font-bold">Arka Planı Değiştir</span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {WALLPAPERS.map((w) => (
+              <button 
+                key={w.id} 
+                onClick={() => setWallpaper(w.img)}
+                className={`group relative h-16 rounded-xl overflow-hidden border transition-all duration-500 cursor-pointer ${
+                  wallpaper === w.img ? 'border-zinc-300 scale-98 shadow-md' : 'border-white/5 hover:border-white/20 opacity-70 hover:opacity-100'
+                }`}
+              >
+                <img src={w.img} alt={w.name} className="absolute inset-0 w-full h-full object-cover filter grayscale contrast-125 transition-transform duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors duration-500" />
+                <span className="relative z-10 text-[9px] font-black text-zinc-300 group-hover:text-white uppercase tracking-wider">{w.name}</span>
+              </button>
+            ))}
+          </div>
+        </footer>
+      </div>
+    );
+  }
+
+  // ==================== 3. WEB SÜRÜMÜ TAKİP ARAYÜZÜ (KONTROL PANELİ) ====================
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)' }} className="pb-16">
+    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)' }} className="pb-16 transition-all duration-500">
       <div className="max-w-5xl mx-auto px-4 py-6">
         
         {/* Header */}
         <header className="flex items-center justify-between mb-8 pb-4 border-b border-zinc-900/30">
           <div className="flex items-center gap-3">
-            <img src="/images/app_logo.png?v=3" alt="ChadFocus Logo" className="w-8 h-8 rounded-lg object-cover" />
+            <img src="/images/app_logo.png?v=3" alt="ChadFocus Logo" className="w-8 h-8 rounded-lg object-cover filter grayscale" />
             <div>
               <h1 className="text-lg font-black tracking-tight" style={{ background: 'linear-gradient(90deg, #FFD700, #CD7F32)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 CHADFOCUS
@@ -224,23 +407,13 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Profil ve Oturumu Kapatma Butonu */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-white/5 border border-white/5 px-3 py-1.5 rounded-2xl">
-              {session?.user?.image && (
-                <img src={session.user.image} alt={session.user.name} className="w-7 h-7 rounded-full border border-[#FFD700]/30" />
-              )}
-              <div className="hidden md:block text-left">
-                <div className="text-[9px] text-zinc-400 font-medium">Hoş Geldin</div>
-                <div className="text-[10px] font-bold text-zinc-100 leading-none">{session?.user?.name}</div>
-              </div>
-            </div>
-
+            {/* Landing Ekranına Dön Butonu (Web'i Kapat) */}
             <button 
-              onClick={() => setSession(null)}
-              className="bg-white/5 hover:bg-white/10 text-[#FFD700] border border-[#FFD700]/25 text-[10px] font-extrabold px-3 py-2 rounded-xl transition-all cursor-pointer"
+              onClick={() => setShowWeb(false)}
+              className="bg-zinc-900/80 hover:bg-zinc-800 border border-white/5 text-zinc-300 text-[10px] font-black px-4 py-2 rounded-xl transition-all cursor-pointer"
             >
-              HESAP DEĞİŞTİR / ÇIK
+              ← ANA SAYFAYA DÖN
             </button>
           </div>
         </header>
@@ -279,37 +452,32 @@ export default function Home() {
             className="tab-transition-container" 
             style={{ transform: `translateX(-${activeIndex * 100}%)` }}
           >
-            {/* Panel 0: Home */}
-            <div className={`tab-panel ${tab === 'home' ? 'active' : ''}`}>
-              <HomeTab />
-            </div>
-
-            {/* Panel 1: Dashboard */}
+            {/* Panel 0: Dashboard */}
             <div className={`tab-panel ${tab === 'dash' ? 'active' : ''}`}>
               <DashboardTab habits={habits} chart={chart} stats={stats} chad={chad} onToggle={toggle} onShare={() => setShare(true)} />
             </div>
 
-            {/* Panel 2: Habits */}
+            {/* Panel 1: Habits */}
             <div className={`tab-panel ${tab === 'habits' ? 'active' : ''}`}>
-              <HabitsTab habits={habits} onToggle={toggle} onRename={rename} />
+              <HabitsTab habits={habits} onToggle={toggle} onAdd={addHabit} onDelete={deleteHabit} />
             </div>
 
-            {/* Panel 3: Analytics */}
+            {/* Panel 2: Analytics */}
             <div className={`tab-panel ${tab === 'analytics' ? 'active' : ''}`}>
               <AnalyticsTab habits={habits} chart={chart} stats={stats} />
             </div>
 
-            {/* Panel 4: Achievements */}
+            {/* Panel 3: Achievements */}
             <div className={`tab-panel ${tab === 'achieve' ? 'active' : ''}`}>
               <AchievementsTab habits={habits} chart={chart} stats={stats} achi={achi} chad={chad} />
             </div>
 
-            {/* Panel 5: Studio */}
+            {/* Panel 4: Studio */}
             <div className={`tab-panel ${tab === 'studio' ? 'active' : ''}`}>
               <StudioTab />
             </div>
 
-            {/* Panel 6: Settings */}
+            {/* Panel 5: Settings */}
             <div className={`tab-panel ${tab === 'settings' ? 'active' : ''}`}>
               <SettingsTab theme={theme} themes={THEMES} onChangeTheme={changeTheme} onReset={resetAll} />
             </div>
