@@ -430,7 +430,7 @@ export default function Home() {
           {/* Elit Butonlar Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto pt-4">
             <a 
-              href="https://github.com/bercaius/ChadFocus/raw/main/web/ChadFocus-Kurulum.zip" 
+              href="/downloads/ChadFocus-Kurulum.zip" 
               className="group flex flex-col justify-center items-center p-5 rounded-2xl bg-zinc-950/50 border border-white/5 hover:border-white/20 hover:bg-zinc-900/40 transition-all duration-300 active:scale-95 shadow-xl backdrop-blur-sm"
             >
               <svg className="w-6 h-6 mb-2 text-zinc-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -441,7 +441,7 @@ export default function Home() {
             </a>
 
             <a 
-              href="https://github.com/bercaius/ChadFocus/raw/main/web/ChadFocus.apk" 
+              href="/downloads/ChadFocus.apk" 
               className="group flex flex-col justify-center items-center p-5 rounded-2xl bg-zinc-950/50 border border-white/5 hover:border-white/20 hover:bg-zinc-900/40 transition-all duration-300 active:scale-95 shadow-xl backdrop-blur-sm"
             >
               <svg className="w-6 h-6 mb-2 text-zinc-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
