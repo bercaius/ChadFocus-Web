@@ -167,6 +167,7 @@ export default function Home() {
   // Elit Landing Arayüzü Durumu (showWeb=false iken landing gösterilir)
   const [showWeb, setShowWeb] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [showInstallGuide, setShowInstallGuide] = useState(false);
 
   // Kalıcı Duvar Kağıdı ve Saydamlık Seçimi
   const [wallpaper, setWallpaper] = useLocalStorage('cf-wallpaper', '/images/wallpaper_1.png?v=3');
@@ -431,6 +432,35 @@ export default function Home() {
               <span className="text-xs font-black text-black uppercase tracking-wider">WEB SÜRÜMÜNÜ KULLAN</span>
               <span className="text-[9px] text-zinc-800 font-bold mt-1">Tarayıcıda anında başla</span>
             </button>
+          </div>
+
+          {/* Nasıl Kurulur (Açılır Kapanır) */}
+          <div className="max-w-2xl mx-auto pt-2">
+            <button 
+              onClick={() => setShowInstallGuide(!showInstallGuide)}
+              className="flex items-center gap-2 mx-auto text-[10px] text-zinc-500 hover:text-zinc-300 transition-colors uppercase font-bold tracking-widest"
+            >
+              <svg className={`w-3 h-3 transition-transform ${showInstallGuide ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+              Kurulum Rehberi & Güvenlik
+            </button>
+            
+            {showInstallGuide && (
+              <div className="mt-4 p-5 rounded-2xl bg-zinc-900/60 border border-white/10 text-left text-xs text-zinc-400 leading-relaxed backdrop-blur-md shadow-xl animate-in slide-in-from-top-2 duration-300">
+                <div className="flex items-center gap-2 mb-2 text-white font-bold text-sm">
+                  <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                  %100 Güvenli & Virüssüz
+                </div>
+                <p className="mb-2">
+                  Windows SmartScreen veya Antivirüs programları, sertifikasız özel yazılımları (indie projeler) tanımadığı için <strong className="text-zinc-200">"Bilinmeyen Yayıncı"</strong> uyarısı verebilir. Bu tamamen normaldir ve bir güvenlik ihlali değildir.
+                </p>
+                <ol className="list-decimal list-inside space-y-1 text-zinc-500">
+                  <li>İndirdiğiniz <strong className="text-zinc-300">ZIP</strong> dosyasını klasöre çıkartın.</li>
+                  <li>İçindeki <strong className="text-zinc-300">ChadFocusSetup.exe</strong> dosyasını çalıştırın.</li>
+                  <li>Mavi bir uyarı ekranı çıkarsa: <strong className="text-white">Ek Bilgi</strong> &gt; <strong className="text-white">Yine de Çalıştır</strong> diyerek kalkanı aşın.</li>
+                  <li>Sihirbazı tamamlayıp masüstündeki logodan grind'a başlayın.</li>
+                </ol>
+              </div>
+            )}
           </div>
         </main>
 
