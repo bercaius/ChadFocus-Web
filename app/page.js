@@ -110,6 +110,7 @@ export default function Home() {
   
   // Elit Landing Arayüzü Durumu (showWeb=false iken landing gösterilir)
   const [showWeb, setShowWeb] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   // Kalıcı Duvar Kağıdı Seçimi
   const [wallpaper, setWallpaper] = useLocalStorage('cf-wallpaper', '/images/wallpaper_1.png?v=3');
@@ -120,6 +121,15 @@ export default function Home() {
   useEffect(() => { 
     setMounted(true); 
     document.documentElement.setAttribute('data-theme', theme); 
+
+    // URL'deki platform parametresini kontrol et
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('platform') === 'desktop') {
+        setShowWeb(true);
+        setIsDesktop(true);
+      }
+    }
   }, [theme]);
 
   // Firestore Eşitleme Dinleyicisi
@@ -344,7 +354,7 @@ export default function Home() {
             </a>
 
             <a 
-              href="https://github.com/bercaius/ChadFocus/raw/main/web/ChadFocus.apk" 
+              href="https://github.com/bercaius/ChadFocus/releases/latest/download/app-release.apk" 
               className="group flex flex-col justify-center items-center p-5 rounded-2xl bg-zinc-950/50 border border-white/5 hover:border-white/20 hover:bg-zinc-900/40 transition-all duration-300 active:scale-95 shadow-xl backdrop-blur-sm"
             >
               <svg className="w-6 h-6 mb-2 text-zinc-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -413,12 +423,14 @@ export default function Home() {
 
           <div className="flex items-center gap-3">
             {/* Landing Ekranına Dön Butonu (Web'i Kapat) */}
-            <button 
-              onClick={() => setShowWeb(false)}
-              className="bg-zinc-900/80 hover:bg-zinc-800 border border-white/5 text-zinc-300 text-[10px] font-black px-4 py-2 rounded-xl transition-all cursor-pointer"
-            >
-              ← ANA SAYFAYA DÖN
-            </button>
+            {!isDesktop && (
+              <button 
+                onClick={() => setShowWeb(false)}
+                className="bg-zinc-900/80 hover:bg-zinc-800 border border-white/5 text-zinc-300 text-[10px] font-black px-4 py-2 rounded-xl transition-all cursor-pointer"
+              >
+                ← ANA SAYFAYA DÖN
+              </button>
+            )}
           </div>
         </header>
 
