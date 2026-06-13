@@ -338,7 +338,9 @@ export default function Home() {
               rel="noopener noreferrer"
               className="group flex flex-col justify-center items-center p-5 rounded-2xl bg-zinc-950/50 border border-white/5 hover:border-white/20 hover:bg-zinc-900/40 transition-all duration-300 active:scale-95 shadow-xl backdrop-blur-sm"
             >
-              <span className="text-xl mb-1">💻</span>
+              <svg className="w-6 h-6 mb-2 text-zinc-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
               <span className="text-xs font-black text-white uppercase tracking-wider">MASAÜSTÜ SÜRÜMÜ</span>
               <span className="text-[9px] text-zinc-500 font-bold mt-1">Windows EXE / MSI indir</span>
             </a>
@@ -347,7 +349,9 @@ export default function Home() {
               href="https://github.com/bercaius/ChadFocus/raw/main/web/ChadFocus.apk" 
               className="group flex flex-col justify-center items-center p-5 rounded-2xl bg-zinc-950/50 border border-white/5 hover:border-white/20 hover:bg-zinc-900/40 transition-all duration-300 active:scale-95 shadow-xl backdrop-blur-sm"
             >
-              <span className="text-xl mb-1">📱</span>
+              <svg className="w-6 h-6 mb-2 text-zinc-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+              </svg>
               <span className="text-xs font-black text-white uppercase tracking-wider">MOBİL SÜRÜMÜ</span>
               <span className="text-[9px] text-zinc-500 font-bold mt-1">Android APK yükle</span>
             </a>
@@ -356,7 +360,9 @@ export default function Home() {
               onClick={() => setShowWeb(true)}
               className="group flex flex-col justify-center items-center p-5 rounded-2xl bg-gradient-to-r from-zinc-100 to-zinc-300 hover:brightness-110 transition-all duration-300 active:scale-95 shadow-xl shadow-white/5 cursor-pointer"
             >
-              <span className="text-xl mb-1">🌐</span>
+              <svg className="w-6 h-6 mb-2 text-zinc-800" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+              </svg>
               <span className="text-xs font-black text-black uppercase tracking-wider">WEB SÜRÜMÜNÜ KULLAN</span>
               <span className="text-[9px] text-zinc-800 font-bold mt-1">Tarayıcıda anında başla</span>
             </button>
