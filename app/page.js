@@ -155,7 +155,7 @@ function makeChart() {
 }
 
 export default function Home() {
-  const { user, loading: authLoading, signInWithGoogle, logout } = useAuth();
+  const { user, loading: authLoading, signInWithGoogle, signInAsGuest, linkAccount, logout } = useAuth();
   const [habits, setHabits] = useState(DEFAULT_HABITS);
   const [chart, setChart] = useState(makeChart());
   const [achi, setAchi] = useState(ACHIEVEMENTS.map(a => ({ ...a, unlocked: false })));
@@ -163,6 +163,16 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [tab, setTab] = useState('dash');
   const [share, setShare] = useState(false);
+  const [showGuestPrompt, setShowGuestPrompt] = useState(false);
+  const [dismissedGuestPrompt, setDismissedGuestPrompt] = useState(false);
+
+  useEffect(() => {
+    if (user?.isAnonymous && !dismissedGuestPrompt) {
+      setShowGuestPrompt(true);
+    } else {
+      setShowGuestPrompt(false);
+    }
+  }, [user, dismissedGuestPrompt]);
   
   // Elit Landing Arayüzü Durumu (showWeb=false iken landing gösterilir)
   const [showWeb, setShowWeb] = useState(false);
@@ -326,20 +336,39 @@ export default function Home() {
           <div className="space-y-1">
             <h2 className="text-md font-bold text-zinc-200">Gelişime İlk Adımı At</h2>
             <p className="text-[11px] text-zinc-500 leading-relaxed max-w-xs mx-auto">
-              Disiplinini takip etmek ve tüm cihazlarınla bulut üzerinden senkronize olmak için Google hesabınla güvenli giriş yap.
+              Disiplinini takip etmek ve tüm cihazlarınla bulut üzerinden senkronize olmak için Google hesabınla giriş yap.
             </p>
           </div>
 
-          <button 
-            type="button" 
-            onClick={signInWithGoogle} 
-            className="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-zinc-100 hover:bg-white text-black font-black text-xs transition-all cursor-pointer shadow-lg active:scale-95"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.113-5.111 4.113-3.418 0-6.19-2.772-6.19-6.19 0-3.418 2.772-6.19 6.19-6.19 1.57 0 2.996.59 4.095 1.548l3.155-3.155C19.123 2.012 15.932 1 12.24 1 5.922 1 1 5.922 1 12.24s4.922 11.24 11.24 11.24c6.318 0 11.24-4.922 11.24-11.24 0-.795-.078-1.57-.217-2.315H12.24z"/>
-            </svg>
-            GOOGLE İLE GİRİŞ YAP
-          </button>
+          <div className="space-y-3">
+            <button 
+              type="button" 
+              onClick={signInWithGoogle} 
+              className="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-zinc-100 hover:bg-white text-black font-black text-xs transition-all cursor-pointer shadow-lg active:scale-95"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.113-5.111 4.113-3.418 0-6.19-2.772-6.19-6.19 0-3.418 2.772-6.19 6.19-6.19 1.57 0 2.996.59 4.095 1.548l3.155-3.155C19.123 2.012 15.932 1 12.24 1 5.922 1 1 5.922 1 12.24s4.922 11.24 11.24 11.24c6.318 0 11.24-4.922 11.24-11.24 0-.795-.078-1.57-.217-2.315H12.24z"/>
+              </svg>
+              GOOGLE İLE GİRİŞ YAP
+            </button>
+
+            <div className="flex items-center justify-center gap-2 py-1">
+              <div className="h-[1px] bg-zinc-900/50 flex-1" />
+              <span className="text-[9px] text-zinc-600 font-bold uppercase tracking-wider">Veya</span>
+              <div className="h-[1px] bg-zinc-900/50 flex-1" />
+            </div>
+
+            <button 
+              type="button" 
+              onClick={signInAsGuest} 
+              className="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-850 hover:border-zinc-700 font-black text-xs transition-all cursor-pointer shadow-lg active:scale-95"
+            >
+              MİSAFİR OLARAK GRIND'A BAŞLA
+            </button>
+            <p className="text-[9px] text-zinc-600 font-medium leading-relaxed max-w-xs mx-auto">
+              Google girişi hata verirse misafir olarak devam edebilirsin. Verilerin anonim olarak saklanır.
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -625,6 +654,59 @@ export default function Home() {
       </div>
 
       {share && <ShareModal habits={habits} chart={chart} stats={stats} onClose={() => setShare(false)} />}
+      
+      {showGuestPrompt && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="relative w-full max-w-sm p-8 bg-zinc-950 border border-zinc-900 rounded-3xl text-center shadow-[0_20px_100px_rgba(0,0,0,0.85)] space-y-6">
+            <div className="flex flex-col items-center">
+              <span className="text-4xl mb-3">🛡️</span>
+              <h2 className="text-lg font-black tracking-wider text-white uppercase">GOOGLE ILE ENTEGRE ET</h2>
+              <p className="text-[9px] text-zinc-500 font-bold tracking-[0.25em] uppercase mt-1">Gelişimi Güvence Altına Al</p>
+            </div>
+            
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              Dostum, şu an sisteme <strong className="text-white">Misafir (Anonim)</strong> olarak giriş yapmış durumdasın. Verilerinin kaybolmaması, Win serilerinin (streak) silinmemesi ve tüm cihazlarından kesintisiz erişebilmen için Google hesabını bağlamanı öneririz.
+            </p>
+
+            <div className="space-y-3 pt-2">
+              <button 
+                type="button"
+                onClick={async () => {
+                  try {
+                    await linkAccount();
+                    setShowGuestPrompt(false);
+                  } catch (e) {
+                    console.error("Hesap bağlama başarısız, normal giriş deneniyor:", e);
+                    try {
+                      await signInWithGoogle();
+                      setShowGuestPrompt(false);
+                    } catch (err) {
+                      alert("Giriş başarısız, lütfen tekrar deneyin.");
+                    }
+                  }
+                }}
+                className="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-zinc-100 hover:bg-white text-black font-black text-xs transition-all cursor-pointer shadow-lg active:scale-95"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.113-5.111 4.113-3.418 0-6.19-2.772-6.19-6.19 0-3.418 2.772-6.19 6.19-6.19 1.57 0 2.996.59 4.095 1.548l3.155-3.155C19.123 2.012 15.932 1 12.24 1 5.922 1 12.24s4.922 11.24 11.24 11.24c6.318 0 11.24-4.922 11.24-11.24 0-.795-.078-1.57-.217-2.315H12.24z"/>
+                </svg>
+                GOOGLE HESABINI BAĞLA
+              </button>
+
+              <button 
+                type="button" 
+                onClick={() => {
+                  setDismissedGuestPrompt(true);
+                  setShowGuestPrompt(false);
+                }} 
+                className="w-full p-3 rounded-xl bg-transparent hover:bg-zinc-900/50 text-zinc-500 hover:text-zinc-300 font-bold text-[9px] tracking-wider transition-all cursor-pointer"
+              >
+                MİSAFİR OLARAK DEVAM ET
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
