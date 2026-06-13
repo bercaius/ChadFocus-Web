@@ -495,7 +495,7 @@ export default function Home() {
 
             {/* Panel 5: Settings */}
             <div className={`tab-panel ${tab === 'settings' ? 'active' : ''}`}>
-              <SettingsTab theme={theme} themes={THEMES} onChangeTheme={changeTheme} onReset={resetAll} />
+              <SettingsTab theme={theme} themes={THEMES} onChangeTheme={changeTheme} onReset={resetAll} user={user} />
             </div>
           </div>
         </div>

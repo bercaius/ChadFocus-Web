@@ -1,20 +1,37 @@
 'use client';
 
-export default function SettingsTab({ theme, themes, onChangeTheme, onReset }) {
+export default function SettingsTab({ theme, themes, onChangeTheme, onReset, user }) {
   return (
     <div className="space-y-4">
       {/* Profil */}
       <div className="glass-card rounded-xl p-4">
         <span className="text-xs font-semibold tracking-wider" style={{color:'var(--text-muted)'}}>PROFİL</span>
         <div className="flex items-center gap-3 mt-3 p-3 rounded-lg" style={{background:'var(--text-dim)'}}>
-          <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm" style={{background:'linear-gradient(135deg, #FFD700, #CD7F32)', color:'#000'}}>
-            CF
-          </div>
+          {user?.image ? (
+            <img src={user.image} alt={user.name} className="w-10 h-10 rounded-full object-cover filter grayscale" />
+          ) : (
+            <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm" style={{background:'linear-gradient(135deg, #FFD700, #CD7F32)', color:'#000'}}>
+              CF
+            </div>
+          )}
           <div>
-            <div className="text-sm font-semibold">ChadFocus</div>
-            <div className="text-[10px]" style={{color:'var(--text-muted)'}}>Disiplin yolcusu</div>
+            <div className="text-sm font-semibold">{user?.name || 'ChadFocus'}</div>
+            <div className="text-[10px]" style={{color:'var(--text-muted)'}}>{user?.email || 'Disiplin yolcusu'}</div>
           </div>
         </div>
+
+        {user?.uid && (
+          <div className="mt-3 p-3 rounded-lg border border-white/5 bg-black/20">
+            <div className="text-[9px] font-black text-zinc-500 tracking-wider uppercase">Masaüstü Eşitleme Kodu</div>
+            <div className="text-xs font-mono select-all text-zinc-300 mt-1 break-all cursor-pointer hover:text-white" title="Kopyalamak için tıklayın" onClick={() => {
+              navigator.clipboard.writeText(user.uid);
+              alert("Eşitleme kodu kopyalandı! Bunu masaüstü uygulamasındaki Giriş ekranına yapıştır.");
+            }}>
+              {user.uid}
+            </div>
+            <p className="text-[8px] text-zinc-600 mt-1">Eşitleme kodunu kopyalayarak Masaüstü uygulamasında Giriş yapabilirsin.</p>
+          </div>
+        )}
       </div>
 
       {/* Tema */}
