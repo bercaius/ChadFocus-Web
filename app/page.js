@@ -19,6 +19,7 @@ import NewsTab from '@/app/components/NewsTab';
 import MusicTab from '@/app/components/MusicTab';
 import RoomTab from '@/app/components/RoomTab';
 import InstaTab from '@/app/components/InstaTab';
+import GrindHubTab from '@/app/components/GrindHubTab';
 
 const TABS = [
   { 
@@ -121,6 +122,16 @@ const TABS = [
       <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
         <circle cx="4" cy="4" r="2" stroke="none" fill="currentColor" />
+      </svg>
+    )
+  },
+  { 
+    id: 'grindhub', 
+    label: 'Gelişim', 
+    tooltip: 'Odak, Jurnal & Su',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
     )
   }
@@ -561,6 +572,11 @@ export default function Home() {
             {/* Panel 9: Insta */}
             <div className={`tab-panel ${tab === 'insta' ? 'active' : ''}`}>
               <InstaTab />
+            </div>
+
+            {/* Panel 10: GrindHub */}
+            <div className={`tab-panel ${tab === 'grindhub' ? 'active' : ''}`}>
+              <GrindHubTab />
             </div>
           </div>
         </div>

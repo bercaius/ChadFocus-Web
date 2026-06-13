@@ -17,18 +17,46 @@ export default function AnalyticsTab({ habits, chart, stats }) {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Ort. Seri', value: stats.avgStreak, clr: 'var(--neon-green)' },
-          { label: 'Mük. Gün', value: stats.perfectDays, clr: 'var(--neon-blue)' },
-          { label: 'Mük. Hafta', value: stats.perfectWeeks, clr: 'var(--neon-purple)' },
-          { label: 'Kalan Gün', value: stats.daysLeft, clr: 'var(--neon-orange)' },
-        ].map((s,i) => (
-          <div key={i} className="glass-card rounded-xl p-3 text-center">
-            <div className="text-lg font-bold" style={{color:s.clr}}>{s.value}</div>
-            <div className="text-[10px]" style={{color:'var(--text-muted)'}}>{s.label}</div>
-          </div>
-        ))}
+          { label: 'Disiplin Skoru', value: Math.min(100, Math.round((stats.avgStreak / 30) * 100)), unit: '%', clr: 'var(--neon-green)', max: 100 },
+          { label: 'Mük. Gün', value: stats.perfectDays, unit: 'G', clr: 'var(--neon-blue)', max: 30 },
+          { label: 'Başarı Oranı', value: wData.length ? wData[0].avg : 0, unit: '%', clr: 'var(--neon-purple)', max: 100 },
+          { label: 'Ort. Seri', value: stats.avgStreak, unit: 'G', clr: 'var(--neon-orange)', max: 30 },
+        ].map((s,i) => {
+          const radius = 36;
+          const circumference = 2 * Math.PI * radius;
+          const strokeDashoffset = circumference - ((s.value / s.max) * circumference);
+          
+          return (
+            <div key={i} className="glass-card rounded-2xl p-4 flex flex-col items-center justify-center relative overflow-hidden group">
+              <div className="absolute inset-0 opacity-10 transition-opacity group-hover:opacity-20" style={{ background: `radial-gradient(circle at center, ${s.clr} 0%, transparent 70%)` }}></div>
+              <div className="relative w-24 h-24 flex items-center justify-center mb-2">
+                <svg className="w-full h-full transform -rotate-90">
+                  {/* Background Circle */}
+                  <circle cx="48" cy="48" r={radius} stroke="var(--text-dim)" strokeWidth="6" fill="transparent" className="opacity-20" />
+                  {/* Progress Circle */}
+                  <circle 
+                    cx="48" cy="48" r={radius} 
+                    stroke={s.clr} 
+                    strokeWidth="6" 
+                    fill="transparent" 
+                    strokeDasharray={circumference} 
+                    strokeDashoffset={strokeDashoffset}
+                    strokeLinecap="round"
+                    className="transition-all duration-1000 ease-out"
+                    style={{ filter: `drop-shadow(0 0 6px ${s.clr})` }}
+                  />
+                </svg>
+                <div className="absolute flex items-baseline gap-0.5">
+                  <span className="text-xl font-black text-white">{s.value}</span>
+                  <span className="text-[10px] font-bold" style={{color:s.clr}}>{s.unit}</span>
+                </div>
+              </div>
+              <div className="text-[10px] font-bold tracking-widest uppercase text-center z-10" style={{color:'var(--text-muted)'}}>{s.label}</div>
+            </div>
+          );
+        })}
       </div>
 
       <div className="glass-card rounded-xl p-4">
