@@ -15,6 +15,10 @@ import AchievementsTab from '@/app/components/AchievementsTab';
 import StudioTab from '@/app/components/StudioTab';
 import SettingsTab from '@/app/components/SettingsTab';
 import ShareModal from '@/app/components/ShareModal';
+import NewsTab from '@/app/components/NewsTab';
+import MusicTab from '@/app/components/MusicTab';
+import RoomTab from '@/app/components/RoomTab';
+import InstaTab from '@/app/components/InstaTab';
 
 const TABS = [
   { 
@@ -76,6 +80,47 @@ const TABS = [
       <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
         <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    )
+  },
+  { 
+    id: 'news', 
+    label: 'Gündem', 
+    tooltip: 'Haberler',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+      </svg>
+    )
+  },
+  { 
+    id: 'music', 
+    label: 'Ritim', 
+    tooltip: 'Müzik Odası',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+      </svg>
+    )
+  },
+  { 
+    id: 'room', 
+    label: 'Odalar', 
+    tooltip: 'Senkron Dinle',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+    )
+  },
+  { 
+    id: 'insta', 
+    label: 'Sosyal', 
+    tooltip: 'Instagram',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
+        <circle cx="4" cy="4" r="2" stroke="none" fill="currentColor" />
       </svg>
     )
   }
@@ -496,6 +541,26 @@ export default function Home() {
             {/* Panel 5: Settings */}
             <div className={`tab-panel ${tab === 'settings' ? 'active' : ''}`}>
               <SettingsTab theme={theme} themes={THEMES} onChangeTheme={changeTheme} onReset={resetAll} user={user} />
+            </div>
+
+            {/* Panel 6: News */}
+            <div className={`tab-panel ${tab === 'news' ? 'active' : ''}`}>
+              <NewsTab />
+            </div>
+
+            {/* Panel 7: Music */}
+            <div className={`tab-panel ${tab === 'music' ? 'active' : ''}`}>
+              <MusicTab />
+            </div>
+
+            {/* Panel 8: Room */}
+            <div className={`tab-panel ${tab === 'room' ? 'active' : ''}`}>
+              <RoomTab />
+            </div>
+
+            {/* Panel 9: Insta */}
+            <div className={`tab-panel ${tab === 'insta' ? 'active' : ''}`}>
+              <InstaTab />
             </div>
           </div>
         </div>
