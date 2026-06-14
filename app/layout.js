@@ -14,8 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "ChadFocus — Disiplin Takip Sistemi",
-  description: "Disiplinini gorsellestir, serilerini takip et, potansiyelini ortaya cikar.",
-  manifest: "/manifest.json",
+  description: "Disiplinini gorsellestir, serilerini takip et, potansiyelini ortaya cikar."
 };
 
 export const viewport = {
@@ -41,6 +40,7 @@ export default function RootLayout({ children }) {
             })();
           `
         }} />
+        <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
       </head>
       <body className="antialiased" style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
         <AuthProvider>{children}</AuthProvider>
