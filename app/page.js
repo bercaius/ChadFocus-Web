@@ -138,10 +138,8 @@ const TABS = [
 ];
 
 const WALLPAPERS = [
-  { id: 'w1', img: '/images/wallpaper_1.png?v=4', name: 'Efsane Klasik' },
-  { id: 'w2', img: '/images/wallpaper_2.png?v=3', name: 'Hit Kürü' },
-  { id: 'w3', img: '/images/wallpaper_3.png?v=3', name: 'Disiplin Profili' },
-  { id: 'w4', img: '/images/wallpaper_4.png?v=3', name: 'Kusursuz Zafer' }
+  { id: 'w1', img: '/images/wallpaper_1.png?v=5', name: 'Özel 4K 1' },
+  { id: 'w2', img: '/images/wallpaper_2.jpg?v=5', name: 'Özel 4K 2' }
 ];
 
 function makeChart() {
@@ -180,7 +178,7 @@ export default function Home() {
   const [showInstallGuide, setShowInstallGuide] = useState(false);
 
   // Kalıcı Duvar Kağıdı ve Saydamlık Seçimi
-  const [wallpaper, setWallpaper] = useLocalStorage('cf-wallpaper', '/images/wallpaper_1.png?v=4');
+  const [wallpaper, setWallpaper] = useLocalStorage('cf-wallpaper', '/images/wallpaper_1.png?v=5');
   const [bgOpacity, setBgOpacity] = useLocalStorage('cf-bg-opacity', 0.85);
 
   // macOS Dock Büyütme Efekti
@@ -525,7 +523,7 @@ export default function Home() {
             <span className="text-[9px] text-zinc-600 font-bold">Arka Planı Değiştir</span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             {WALLPAPERS.map((w) => (
               <button 
                 key={w.id} 
