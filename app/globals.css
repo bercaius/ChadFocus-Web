@@ -311,27 +311,17 @@ body {
 }
 
 /* === TAB TRANSITION ANIMATIONS === */
-.tab-transition-wrapper {
-  overflow: hidden;
+.tab-content-wrapper {
   position: relative;
   width: 100%;
 }
 
-.tab-transition-container {
-  display: flex;
-  width: 100%;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
 .tab-panel {
-  flex-shrink: 0;
   width: 100%;
-  opacity: 0;
-  transform: scale(0.95);
-  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: tabFadeIn 0.4s ease-out forwards;
 }
 
-.tab-panel.active {
-  opacity: 1;
-  transform: scale(1);
+@keyframes tabFadeIn {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
 }

@@ -580,67 +580,73 @@ export default function Home() {
           </div>
         </nav>
 
-        {/* Content with Horizontal Slide Animation */}
-        <div className="tab-transition-wrapper">
-          <div 
-            className="tab-transition-container" 
-            style={{ transform: `translateX(-${activeIndex * 100}%)` }}
-          >
-            {/* Panel 0: Dashboard */}
-            <div className={`tab-panel ${tab === 'dash' ? 'active' : ''}`}>
-              <DashboardTab habits={habits} chart={chart} stats={stats} chad={chad} onToggle={toggle} onShare={() => setShare(true)} />
-            </div>
+        {/* Content with simple render to prevent height bugs (kayma) */}
+        <div className="tab-content-wrapper mt-4">
+            {tab === 'dash' && (
+              <div className="tab-panel active">
+                <DashboardTab habits={habits} chart={chart} stats={stats} chad={chad} onToggle={toggle} onShare={() => setShare(true)} />
+              </div>
+            )}
 
-            {/* Panel 1: Habits */}
-            <div className={`tab-panel ${tab === 'habits' ? 'active' : ''}`}>
-              <HabitsTab habits={habits} onToggle={toggle} onAdd={addHabit} onDelete={deleteHabit} />
-            </div>
+            {tab === 'habits' && (
+              <div className="tab-panel active">
+                <HabitsTab habits={habits} onToggle={toggle} onAdd={addHabit} onDelete={deleteHabit} />
+              </div>
+            )}
 
-            {/* Panel 2: Analytics */}
-            <div className={`tab-panel ${tab === 'analytics' ? 'active' : ''}`}>
-              <AnalyticsTab habits={habits} chart={chart} stats={stats} />
-            </div>
+            {tab === 'analytics' && (
+              <div className="tab-panel active">
+                <AnalyticsTab habits={habits} chart={chart} stats={stats} />
+              </div>
+            )}
 
-            {/* Panel 3: Achievements */}
-            <div className={`tab-panel ${tab === 'achieve' ? 'active' : ''}`}>
-              <AchievementsTab habits={habits} chart={chart} stats={stats} achi={achi} chad={chad} />
-            </div>
+            {tab === 'achieve' && (
+              <div className="tab-panel active">
+                <AchievementsTab habits={habits} chart={chart} stats={stats} achi={achi} chad={chad} />
+              </div>
+            )}
 
-            {/* Panel 4: Studio */}
-            <div className={`tab-panel ${tab === 'studio' ? 'active' : ''}`}>
-              <StudioTab />
-            </div>
+            {tab === 'studio' && (
+              <div className="tab-panel active">
+                <StudioTab />
+              </div>
+            )}
 
-            {/* Panel 5: Settings */}
-            <div className={`tab-panel ${tab === 'settings' ? 'active' : ''}`}>
-              <SettingsTab theme={theme} themes={THEMES} onChangeTheme={changeTheme} onReset={resetAll} user={user} wallpaper={wallpaper} setWallpaper={setWallpaper} bgOpacity={bgOpacity} setBgOpacity={setBgOpacity} />
-            </div>
+            {tab === 'settings' && (
+              <div className="tab-panel active">
+                <SettingsTab theme={theme} themes={THEMES} onChangeTheme={changeTheme} onReset={resetAll} user={user} wallpaper={wallpaper} setWallpaper={setWallpaper} bgOpacity={bgOpacity} setBgOpacity={setBgOpacity} />
+              </div>
+            )}
 
-            {/* Panel 6: News */}
-            <div className={`tab-panel ${tab === 'news' ? 'active' : ''}`}>
-              <NewsTab />
-            </div>
+            {tab === 'news' && (
+              <div className="tab-panel active">
+                <NewsTab />
+              </div>
+            )}
 
-            {/* Panel 7: Music */}
-            <div className={`tab-panel ${tab === 'music' ? 'active' : ''}`}>
-              <MusicTab />
-            </div>
+            {tab === 'music' && (
+              <div className="tab-panel active">
+                <MusicTab />
+              </div>
+            )}
 
-            {/* Panel 8: Room */}
-            <div className={`tab-panel ${tab === 'room' ? 'active' : ''}`}>
-              <RoomTab />
-            </div>
+            {tab === 'room' && (
+              <div className="tab-panel active">
+                <RoomTab />
+              </div>
+            )}
 
-            {/* Panel 9: Insta */}
-            <div className={`tab-panel ${tab === 'insta' ? 'active' : ''}`}>
-              <InstaTab />
-            </div>
+            {tab === 'insta' && (
+              <div className="tab-panel active">
+                <InstaTab />
+              </div>
+            )}
 
-            {/* Panel 10: GrindHub */}
-            <div className={`tab-panel ${tab === 'grindhub' ? 'active' : ''}`}>
-              <GrindHubTab />
-            </div>
-          </div>
+            {tab === 'grindhub' && (
+              <div className="tab-panel active">
+                <GrindHubTab />
+              </div>
+            )}
         </div>
 
         {/* Footer */}
