@@ -1,9 +1,45 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { auth, db } from '@/lib/firebase';
 import { deleteUser } from 'firebase/auth';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs } from 'firebase/firestore';
+import { ShieldAlert, X } from 'lucide-react';
+
 export default function SettingsTab({ theme, themes, onChangeTheme, onReset, user, wallpaper, setWallpaper, bgOpacity, setBgOpacity }) {
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [adminPassword, setAdminPassword] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminRooms, setAdminRooms] = useState([]);
+  const [loadingAdmin, setLoadingAdmin] = useState(false);
+
+  const fetchRooms = async () => {
+    setLoadingAdmin(true);
+    try {
+      const q = collection(db, 'rooms');
+      const querySnapshot = await getDocs(q);
+      const rooms = [];
+      querySnapshot.forEach((doc) => {
+        rooms.push({ id: doc.id, ...doc.data() });
+      });
+      setAdminRooms(rooms);
+    } catch (e) {
+      console.error(e);
+      alert("Hata: " + e.message);
+    }
+    setLoadingAdmin(false);
+  };
+
+  const handleAdminLogin = (e) => {
+    e.preventDefault();
+    if (adminPassword === 'chadfocus_admin_3321') {
+      setIsAdmin(true);
+      setShowAdminLogin(false);
+      fetchRooms();
+    } else {
+      alert("Yanlış şifre.");
+      setAdminPassword('');
+    }
+  };
   return (
     <div className="space-y-4">
       {/* Profil */}
@@ -183,9 +219,89 @@ export default function SettingsTab({ theme, themes, onChangeTheme, onReset, use
           <p className="text-[9px] tracking-wider uppercase" style={{color:'var(--text-dim)'}}>
             stüdyo · <a href="https://www.instagram.com/turcodevelopstudio/" target="_blank" rel="noopener" style={{color:'#CD7F32'}}>@turcodevelopstudio</a>
           </p>
-          <p className="text-[8px] mt-2" style={{color:'var(--text-dim)'}}>ChadFocus Web Demo · v0.0.5 · 2026</p>
+          <div className="flex justify-between items-center mt-2">
+            <p className="text-[8px]" style={{color:'var(--text-dim)'}}>ChadFocus Web Demo · v0.0.5 · 2026</p>
+            <button onDoubleClick={() => setShowAdminLogin(true)} className="w-4 h-4 opacity-0 hover:opacity-10 transition-opacity">
+              <ShieldAlert className="w-full h-full text-red-500" />
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Admin Panel Modals */}
+      {showAdminLogin && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <form onSubmit={handleAdminLogin} className="bg-zinc-950 p-6 rounded-2xl border border-red-500/50 max-w-sm w-full space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-red-500 font-black flex items-center gap-2"><ShieldAlert className="w-5 h-5" /> SYSTEM OVERRIDE</h3>
+              <button type="button" onClick={() => setShowAdminLogin(false)} className="text-zinc-500 hover:text-white"><X className="w-5 h-5"/></button>
+            </div>
+            <input 
+              type="password" 
+              value={adminPassword}
+              onChange={(e) => setAdminPassword(e.target.value)}
+              placeholder="Admin Passcode"
+              className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white text-center tracking-widest font-mono focus:border-red-500 outline-none"
+            />
+            <button type="submit" className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-black rounded-xl">AUTHENTICATE</button>
+          </form>
+        </div>
+      )}
+
+      {isAdmin && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl">
+          <div className="bg-[#111] p-6 rounded-2xl border border-red-500 max-w-4xl w-full max-h-[90vh] flex flex-col shadow-[0_0_50px_rgba(255,0,0,0.2)]">
+            <div className="flex justify-between items-center border-b border-zinc-800 pb-4 mb-4">
+              <div>
+                <h3 className="text-red-500 font-black text-xl flex items-center gap-2">
+                  <ShieldAlert className="w-6 h-6" /> GÖLGE ANALİZ PANELİ (ADMIN)
+                </h3>
+                <p className="text-xs text-zinc-500 font-mono mt-1">Sunucudaki tüm aktif odaları ve mesajları gizlice dinleme modundasınız.</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <button onClick={fetchRooms} className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold rounded-lg transition-colors">
+                  YENİLE
+                </button>
+                <button onClick={() => setIsAdmin(false)} className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-lg transition-colors">
+                  GÜVENLİ ÇIKIŞ
+                </button>
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-6">
+              {loadingAdmin ? (
+                <div className="text-center text-red-500 font-mono animate-pulse py-10">VERİLER ÇEKİLİYOR...</div>
+              ) : adminRooms.length === 0 ? (
+                <div className="text-center text-zinc-500 font-mono py-10">Aktif oda bulunamadı.</div>
+              ) : (
+                adminRooms.map(room => (
+                  <div key={room.id} className="border border-zinc-800 rounded-xl overflow-hidden bg-black">
+                    <div className="bg-zinc-900 p-3 border-b border-zinc-800 flex justify-between items-center">
+                      <span className="font-mono text-xs font-bold text-red-400">ODA KODU: {room.id} | HOST: {room.host}</span>
+                      <span className="text-[10px] text-zinc-500">
+                        {room.messages?.length || 0} Mesaj | YT: {room.youtubeVideoId ? 'Açık' : 'Kapalı'}
+                      </span>
+                    </div>
+                    <div className="p-3 max-h-60 overflow-y-auto font-mono text-[10px] space-y-2">
+                      {room.messages?.length > 0 ? (
+                        room.messages.map(msg => (
+                          <div key={msg.id} className="flex gap-2">
+                            <span className="text-zinc-600">[{msg.time}]</span>
+                            <span className="text-blue-400 font-bold">{msg.sender}:</span>
+                            <span className="text-zinc-300">{msg.text}</span>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-zinc-600">Bu odada hiç mesaj yok.</div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -18,7 +18,7 @@ import ShareModal from '@/app/components/ShareModal';
 import NewsTab from '@/app/components/NewsTab';
 import MusicTab from '@/app/components/MusicTab';
 import RoomTab from '@/app/components/RoomTab';
-import InstaTab from '@/app/components/InstaTab';
+import SocialTab from '@/app/components/SocialTab';
 import GrindHubTab from '@/app/components/GrindHubTab';
 
 const TABS = [
@@ -115,13 +115,12 @@ const TABS = [
     )
   },
   { 
-    id: 'insta', 
-    label: 'Sosyal', 
-    tooltip: 'Instagram',
+    id: 'social', 
+    label: 'Sosyal Ağ', 
+    tooltip: 'Arkadaşlar & DM',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
-        <circle cx="4" cy="4" r="2" stroke="none" fill="currentColor" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
       </svg>
     )
   },
@@ -248,16 +247,22 @@ export default function Home() {
 
   // Checkbox Tik Atma
   const toggle = useCallback((id) => {
-    const updatedHabits = habits.map(h => h.id === id ? { ...h, done: !h.done } : h);
-    const all = updatedHabits.every(h => h.done);
-    const finalHabits = all ? updatedHabits.map(h => ({ 
-      ...h, 
-      streak: h.done ? h.streak + 1 : 0, 
-      bestStreak: h.done ? Math.max(h.streak + 1, h.bestStreak) : h.bestStreak 
-    })) : updatedHabits;
+    const updatedHabits = habits.map(h => {
+      if (h.id === id) {
+        const isNowDone = !h.done;
+        return {
+          ...h,
+          done: isNowDone,
+          streak: isNowDone ? h.streak + 1 : Math.max(0, h.streak - 1),
+          bestStreak: isNowDone ? Math.max(h.streak + 1, h.bestStreak) : h.bestStreak
+        };
+      }
+      return h;
+    });
     
-    const finalChart = updateChart(finalHabits, chart);
-    saveData(finalHabits, finalChart, null);
+    const finalChart = updateChart(updatedHabits, chart);
+    setHabits(updatedHabits);
+    saveData(updatedHabits, finalChart, null);
   }, [habits, chart, user]);
 
   // Alışkanlık Ekleme (Rutin Oluşturma)
@@ -271,18 +276,21 @@ export default function Home() {
       bestStreak: 0
     };
     const updated = [...habits, newHabit];
+    setHabits(updated);
     saveData(updated, null, null);
   }, [habits, user]);
 
   // Alışkanlık Silme
   const deleteHabit = useCallback((id) => {
     const updated = habits.filter(h => h.id !== id);
+    setHabits(updated);
     saveData(updated, null, null);
   }, [habits, user]);
 
   // Ad Değiştirme
   const rename = useCallback((id, name) => {
     const updated = habits.map(h => h.id === id ? { ...h, name } : h);
+    setHabits(updated);
     saveData(updated, null, null);
   }, [habits, user]);
 
@@ -636,9 +644,9 @@ export default function Home() {
               </div>
             )}
 
-            {tab === 'insta' && (
+            {tab === 'social' && (
               <div className="tab-panel active">
-                <InstaTab />
+                <SocialTab />
               </div>
             )}
 
