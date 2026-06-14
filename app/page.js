@@ -546,10 +546,10 @@ export default function Home() {
   // ==================== 3. WEB SÜRÜMÜ TAKİP ARAYÜZÜ (KONTROL PANELİ) ====================
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)' }} className="pb-16 transition-all duration-500">
-      <div className="max-w-5xl mx-auto px-4 py-6">
+      <div className={tab === 'room' ? "w-full px-0 py-0" : "max-w-5xl mx-auto px-4 py-6"}>
         
         {/* Header */}
-        <header className="flex items-center justify-between mb-8 pb-4 border-b border-zinc-900/30">
+        <header className={`flex items-center justify-between mb-8 pb-4 border-b border-zinc-900/30 ${tab === 'room' ? 'hidden' : ''}`}>
           <div className="flex items-center gap-3">
             <img src="/images/app_logo.png?v=3" alt="ChadFocus Logo" className="w-8 h-8 rounded-lg object-cover filter grayscale" />
             <div>
@@ -574,7 +574,7 @@ export default function Home() {
         </header>
 
         {/* macOS / Linux Dock Style Tab Menu */}
-        <nav className="mb-8">
+        <nav className={`mb-8 ${tab === 'room' ? 'hidden' : ''}`}>
           <div className="mac-dock-container">
             {TABS.map((t, idx) => {
               let scaleClass = 'scale-100';
@@ -603,7 +603,7 @@ export default function Home() {
         </nav>
 
         {/* Content with simple render to prevent height bugs (kayma) */}
-        <div className="tab-content-wrapper mt-4">
+        <div className={`tab-content-wrapper ${tab === 'room' ? 'mt-0' : 'mt-4'}`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={tab}
@@ -620,7 +620,7 @@ export default function Home() {
               {tab === 'settings' && <SettingsTab theme={theme} themes={THEMES} onChangeTheme={changeTheme} onReset={resetAll} user={user} wallpaper={wallpaper} setWallpaper={setWallpaper} bgOpacity={bgOpacity} setBgOpacity={setBgOpacity} />}
               {tab === 'news' && <NewsTab />}
               {tab === 'music' && <MusicTab />}
-              {tab === 'room' && <RoomTab />}
+              {tab === 'room' && <RoomTab onBack={() => setTab('dash')} />}
               {tab === 'social' && <SocialTab />}
               {tab === 'grindhub' && <GrindHubTab />}
             </motion.div>
@@ -628,7 +628,7 @@ export default function Home() {
         </div>
 
         {/* Footer */}
-        <footer className="text-center py-8 mt-12 border-t border-zinc-900/10">
+        <footer className={`text-center py-8 mt-12 border-t border-zinc-900/10 ${tab === 'room' ? 'hidden' : ''}`}>
           <p className="text-[10px] tracking-[4px] uppercase" style={{ color: 'var(--text-dim)' }}>
             yapımcı · <a href="https://www.instagram.com/bercaius.dev/" target="_blank" rel="noopener" className="hover:text-amber-500 transition-colors font-bold">@bercaius.dev</a>
           </p>

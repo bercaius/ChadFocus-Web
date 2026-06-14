@@ -4,11 +4,11 @@ import { useState, useEffect, useRef } from 'react';
 import { db } from '@/lib/firebase';
 import { doc, setDoc, onSnapshot, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
 import { useAuth } from '@/app/components/AuthProvider';
-import { Users, Send, LogOut, Copy, Check, Tv, Play, Pause, MessageSquare, Bot, Settings, Shield, Mic, Video, MonitorUp } from 'lucide-react';
+import { Users, Send, LogOut, Copy, Check, Tv, Play, Pause, MessageSquare, Bot, Settings, Shield, Mic, Video, MonitorUp, ArrowLeft } from 'lucide-react';
 import { JitsiMeeting } from '@jitsi/react-sdk';
 import ReactPlayer from 'react-player';
 
-export default function RoomTab() {
+export default function RoomTab({ onBack }) {
   const { user } = useAuth();
   const [roomId, setRoomId] = useState('');
   const [joinCode, setJoinCode] = useState('');
@@ -168,9 +168,13 @@ export default function RoomTab() {
   // ==================== 1. LOBİ ====================
   if (!roomId) {
     return (
-      <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar relative z-10" style={{ maxHeight: 'calc(100vh - 4rem)' }}>
-        <div className="max-w-4xl mx-auto space-y-6">
-          <div className="glass-panel rounded-2xl p-8 shadow-xl relative overflow-hidden border border-[var(--glass-border)] flex items-center justify-between bg-gradient-to-r from-[#2B2D31] to-[#1E1F22]">
+      <div className="absolute inset-0 z-50 w-full h-screen bg-[#2B2D31] flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
+        <div className="max-w-5xl mx-auto space-y-6 pt-10">
+          <button onClick={onBack} className="text-zinc-400 hover:text-white flex items-center gap-2 mb-6 font-bold text-sm bg-black/20 px-4 py-2 rounded-xl w-max transition-colors">
+            <ArrowLeft className="w-5 h-5" /> Ana Menüye Dön
+          </button>
+          
+          <div className="glass-panel rounded-2xl p-8 shadow-xl relative overflow-hidden border border-[var(--glass-border)] flex flex-col md:flex-row md:items-center justify-between bg-gradient-to-r from-[#2B2D31] to-[#1E1F22]">
             <div>
               <h2 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
                 <Users className="w-8 h-8 text-indigo-400" />
@@ -225,7 +229,7 @@ export default function RoomTab() {
   // ==================== 2. ODA YÜKLENİYOR ====================
   if (!roomData) {
     return (
-      <div className="flex-1 flex items-center justify-center relative z-10" style={{ maxHeight: 'calc(100vh - 4rem)' }}>
+      <div className="absolute inset-0 z-50 w-full h-screen bg-[#313338] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
           <p className="text-zinc-500 font-mono tracking-widest text-xs uppercase">ODAYA BAĞLANILIYOR...</p>
@@ -236,8 +240,8 @@ export default function RoomTab() {
 
   // ==================== 3. CHADSOCIAL ARAYÜZÜ ====================
   return (
-    <div className="flex-1 overflow-hidden p-2 md:p-4 flex flex-col relative z-10" style={{ maxHeight: 'calc(100vh - 4rem)' }}>
-      <div className="max-w-7xl mx-auto w-full h-full flex flex-col rounded-2xl border border-zinc-800 shadow-2xl overflow-hidden bg-[#313338]">
+    <div className="absolute inset-0 z-50 w-full h-screen bg-[#313338] flex flex-col overflow-hidden">
+      <div className="w-full h-full flex flex-col overflow-hidden bg-[#313338]">
         
         {/* Header */}
         <div className="p-3 md:p-4 border-b border-zinc-900 flex justify-between items-center bg-[#2B2D31]">
@@ -323,8 +327,8 @@ export default function RoomTab() {
                   domain="meet.jit.si"
                   roomName={`ChadSocial-Room-${roomId}`}
                   configOverwrite={{
-                    startWithAudioMuted: true,
-                    disableModeratorIndicator: true,
+                    startWithAudioMuted: false,
+                    startWithVideoMuted: false,
                     prejoinPageEnabled: false,
                     disableDeepLinking: true,
                   }}
@@ -334,9 +338,13 @@ export default function RoomTab() {
                     SHOW_PROMOTIONAL_CLOSE_PAGE: false,
                   }}
                   userInfo={{
-                    displayName: user.name
+                    displayName: user?.name || "Misafir"
                   }}
-                  getIFrameRef={(iframeRef) => { iframeRef.style.height = '100%'; iframeRef.style.width = '100%'; }}
+                  getIFrameRef={(iframeRef) => { 
+                    iframeRef.style.height = '100%'; 
+                    iframeRef.style.width = '100%'; 
+                    iframeRef.allow = 'camera; microphone; display-capture; autoplay; clipboard-write';
+                  }}
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center h-full text-zinc-600 opacity-50 p-4 text-center">
@@ -359,7 +367,7 @@ export default function RoomTab() {
                     controls={false}
                     width="100%"
                     height="100%"
-                    config={{ youtube: { playerVars: { disablekb: 1 } } }}
+                    config={{ youtube: { playerVars: { origin: typeof window !== 'undefined' ? window.location.origin : 'https://youtube.com', autoplay: 1, disablekb: 1 } } }}
                   />
                 </div>
               ) : (

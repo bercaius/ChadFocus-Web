@@ -27,11 +27,11 @@ export default function MusicTab() {
     // Dev devasa YouTube müzik arşivi (Phonk, Türkçe Pop, Drill, Motivasyon)
     const premiumTracks = [
       // GYM & PHONK & MOTIVATION
-      { id: '1', name: 'GigaChad Theme (Phonk)', artist_name: 'g3ox_em', image: 'https://i.ytimg.com/vi/1_zVWkpeGoE/0.jpg', audio: 'https://www.youtube.com/watch?v=1_zVWkpeGoE', tags: 'phonk workout chad' },
-      { id: '2', name: 'Metamorphosis', artist_name: 'Interworld', image: 'https://i.ytimg.com/vi/SjZgE7uPOrk/0.jpg', audio: 'https://www.youtube.com/watch?v=SjZgE7uPOrk', tags: 'phonk workout dark' },
+      { id: '1', name: 'GigaChad Theme (Phonk)', artist_name: 'g3ox_em', image: 'https://i.ytimg.com/vi/fhiTzE_1hAM/0.jpg', audio: 'https://www.youtube.com/watch?v=fhiTzE_1hAM', tags: 'phonk workout chad' },
+      { id: '2', name: 'Metamorphosis', artist_name: 'Interworld', image: 'https://i.ytimg.com/vi/eK2x1rLOfA0/0.jpg', audio: 'https://www.youtube.com/watch?v=eK2x1rLOfA0', tags: 'phonk workout dark' },
       { id: '3', name: 'Sahara', artist_name: 'Hensonn', image: 'https://i.ytimg.com/vi/Q281a_sH3kQ/0.jpg', audio: 'https://www.youtube.com/watch?v=Q281a_sH3kQ', tags: 'phonk' },
       { id: '4', name: 'Neon Blade', artist_name: 'MoonDeity', image: 'https://i.ytimg.com/vi/1mYnU5a0p60/0.jpg', audio: 'https://www.youtube.com/watch?v=1mYnU5a0p60', tags: 'phonk gym drift' },
-      { id: '5', name: 'Murder In My Mind', artist_name: 'Kordhell', image: 'https://i.ytimg.com/vi/y-t-D9_zX9M/0.jpg', audio: 'https://www.youtube.com/watch?v=y-t-D9_zX9M', tags: 'phonk workout hard' },
+      { id: '5', name: 'Murder In My Mind', artist_name: 'Kordhell', image: 'https://i.ytimg.com/vi/4OqXWJiMeR0/0.jpg', audio: 'https://www.youtube.com/watch?v=4OqXWJiMeR0', tags: 'phonk workout hard' },
       { id: '6', name: 'Disaster', artist_name: 'KSLV', image: 'https://i.ytimg.com/vi/v2dKIn72FXY/0.jpg', audio: 'https://www.youtube.com/watch?v=v2dKIn72FXY', tags: 'phonk drift dark' },
       { id: '7', name: 'Rave', artist_name: 'Dxrk', image: 'https://i.ytimg.com/vi/PTZcgZaIgNw/0.jpg', audio: 'https://www.youtube.com/watch?v=PTZcgZaIgNw', tags: 'phonk rave' },
       { id: '8', name: 'Polozhenie', artist_name: 'Zedline', image: 'https://i.ytimg.com/vi/q43n21E-3pE/0.jpg', audio: 'https://www.youtube.com/watch?v=q43n21E-3pE', tags: 'sigma grindset' },
@@ -247,6 +247,7 @@ export default function MusicTab() {
               width="1px" 
               height="1px" 
               className="absolute opacity-0 pointer-events-none -left-[9999px]"
+              onError={(e) => console.log('ReactPlayer Error:', e)}
               config={{ youtube: { playerVars: { origin: typeof window !== 'undefined' ? window.location.origin : 'https://youtube.com', autoplay: 1 } } }}
             />
           )}
