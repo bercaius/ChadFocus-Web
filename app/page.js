@@ -138,7 +138,7 @@ const TABS = [
 ];
 
 const WALLPAPERS = [
-  { id: 'w1', img: '/images/wallpaper_1.png?v=3', name: 'Efsane Klasik' },
+  { id: 'w1', img: '/images/wallpaper_1.png?v=4', name: 'Efsane Klasik' },
   { id: 'w2', img: '/images/wallpaper_2.png?v=3', name: 'Hit Kürü' },
   { id: 'w3', img: '/images/wallpaper_3.png?v=3', name: 'Disiplin Profili' },
   { id: 'w4', img: '/images/wallpaper_4.png?v=3', name: 'Kusursuz Zafer' }
@@ -180,7 +180,7 @@ export default function Home() {
   const [showInstallGuide, setShowInstallGuide] = useState(false);
 
   // Kalıcı Duvar Kağıdı ve Saydamlık Seçimi
-  const [wallpaper, setWallpaper] = useLocalStorage('cf-wallpaper', '/images/wallpaper_1.png?v=3');
+  const [wallpaper, setWallpaper] = useLocalStorage('cf-wallpaper', '/images/wallpaper_1.png?v=4');
   const [bgOpacity, setBgOpacity] = useLocalStorage('cf-bg-opacity', 0.85);
 
   // macOS Dock Büyütme Efekti
