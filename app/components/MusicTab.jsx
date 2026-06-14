@@ -27,56 +27,56 @@ export default function MusicTab() {
     // Dev devasa YouTube müzik arşivi (Phonk, Türkçe Pop, Drill, Motivasyon)
     const premiumTracks = [
       // GYM & PHONK & MOTIVATION
-      { id: '1', name: 'GigaChad Theme (Phonk)', artist_name: 'g3ox_em', image: 'https://i.ytimg.com/vi/1_zVWkpeGoE/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=1_zVWkpeGoE', tags: 'phonk workout chad' },
-      { id: '2', name: 'Metamorphosis', artist_name: 'Interworld', image: 'https://i.ytimg.com/vi/SjZgE7uPOrk/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=SjZgE7uPOrk', tags: 'phonk workout dark' },
-      { id: '3', name: 'Sahara', artist_name: 'Hensonn', image: 'https://i.ytimg.com/vi/Q281a_sH3kQ/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=Q281a_sH3kQ', tags: 'phonk' },
-      { id: '4', name: 'Neon Blade', artist_name: 'MoonDeity', image: 'https://i.ytimg.com/vi/1mYnU5a0p60/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=1mYnU5a0p60', tags: 'phonk gym drift' },
-      { id: '5', name: 'Murder In My Mind', artist_name: 'Kordhell', image: 'https://i.ytimg.com/vi/y-t-D9_zX9M/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=y-t-D9_zX9M', tags: 'phonk workout hard' },
-      { id: '6', name: 'Disaster', artist_name: 'KSLV', image: 'https://i.ytimg.com/vi/v2dKIn72FXY/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=v2dKIn72FXY', tags: 'phonk drift dark' },
-      { id: '7', name: 'Rave', artist_name: 'Dxrk', image: 'https://i.ytimg.com/vi/PTZcgZaIgNw/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=PTZcgZaIgNw', tags: 'phonk rave' },
-      { id: '8', name: 'Polozhenie', artist_name: 'Zedline', image: 'https://i.ytimg.com/vi/q43n21E-3pE/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=q43n21E-3pE', tags: 'sigma grindset' },
-      { id: '9', name: 'Vendetta', artist_name: 'MUPP', image: 'https://i.ytimg.com/vi/7vQxS_e2rEE/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=7vQxS_e2rEE', tags: 'phonk angry' },
-      { id: '10', name: 'Wake Up', artist_name: 'MoonDeity', image: 'https://i.ytimg.com/vi/h2l0QvM8KCQ/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=h2l0QvM8KCQ', tags: 'phonk sigma' },
-      { id: '11', name: 'Life Is A Highway', artist_name: 'Rascal Flatts', image: 'https://i.ytimg.com/vi/5tXh_MfrMe0/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=5tXh_MfrMe0', tags: 'cars motivation' },
+      { id: '1', name: 'GigaChad Theme (Phonk)', artist_name: 'g3ox_em', image: 'https://i.ytimg.com/vi/1_zVWkpeGoE/0.jpg', audio: 'https://www.youtube.com/watch?v=1_zVWkpeGoE', tags: 'phonk workout chad' },
+      { id: '2', name: 'Metamorphosis', artist_name: 'Interworld', image: 'https://i.ytimg.com/vi/SjZgE7uPOrk/0.jpg', audio: 'https://www.youtube.com/watch?v=SjZgE7uPOrk', tags: 'phonk workout dark' },
+      { id: '3', name: 'Sahara', artist_name: 'Hensonn', image: 'https://i.ytimg.com/vi/Q281a_sH3kQ/0.jpg', audio: 'https://www.youtube.com/watch?v=Q281a_sH3kQ', tags: 'phonk' },
+      { id: '4', name: 'Neon Blade', artist_name: 'MoonDeity', image: 'https://i.ytimg.com/vi/1mYnU5a0p60/0.jpg', audio: 'https://www.youtube.com/watch?v=1mYnU5a0p60', tags: 'phonk gym drift' },
+      { id: '5', name: 'Murder In My Mind', artist_name: 'Kordhell', image: 'https://i.ytimg.com/vi/y-t-D9_zX9M/0.jpg', audio: 'https://www.youtube.com/watch?v=y-t-D9_zX9M', tags: 'phonk workout hard' },
+      { id: '6', name: 'Disaster', artist_name: 'KSLV', image: 'https://i.ytimg.com/vi/v2dKIn72FXY/0.jpg', audio: 'https://www.youtube.com/watch?v=v2dKIn72FXY', tags: 'phonk drift dark' },
+      { id: '7', name: 'Rave', artist_name: 'Dxrk', image: 'https://i.ytimg.com/vi/PTZcgZaIgNw/0.jpg', audio: 'https://www.youtube.com/watch?v=PTZcgZaIgNw', tags: 'phonk rave' },
+      { id: '8', name: 'Polozhenie', artist_name: 'Zedline', image: 'https://i.ytimg.com/vi/q43n21E-3pE/0.jpg', audio: 'https://www.youtube.com/watch?v=q43n21E-3pE', tags: 'sigma grindset' },
+      { id: '9', name: 'Vendetta', artist_name: 'MUPP', image: 'https://i.ytimg.com/vi/7vQxS_e2rEE/0.jpg', audio: 'https://www.youtube.com/watch?v=7vQxS_e2rEE', tags: 'phonk angry' },
+      { id: '10', name: 'Wake Up', artist_name: 'MoonDeity', image: 'https://i.ytimg.com/vi/h2l0QvM8KCQ/0.jpg', audio: 'https://www.youtube.com/watch?v=h2l0QvM8KCQ', tags: 'phonk sigma' },
+      { id: '11', name: 'Life Is A Highway', artist_name: 'Rascal Flatts', image: 'https://i.ytimg.com/vi/5tXh_MfrMe0/0.jpg', audio: 'https://www.youtube.com/watch?v=5tXh_MfrMe0', tags: 'cars motivation' },
       
       // TÜRKÇE DRILL & RAP & VIRAL
-      { id: '12', name: 'İmdat', artist_name: 'Cakal', image: 'https://i.ytimg.com/vi/A5fM2_5bKjQ/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=A5fM2_5bKjQ', tags: 'türkçe rap drill' },
-      { id: '13', name: 'Bilmem Mi?', artist_name: 'Sefo', image: 'https://i.ytimg.com/vi/WdG9e0T03f0/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=WdG9e0T03f0', tags: 'türkçe pop rap' },
-      { id: '14', name: 'Gecelerin Derdi', artist_name: 'Lvbel C5', image: 'https://i.ytimg.com/vi/U2V_J02e078/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=U2V_J02e078', tags: 'türkçe drill' },
-      { id: '15', name: 'Antidepresan', artist_name: 'Mabel Matiz & Mert Demir', image: 'https://i.ytimg.com/vi/B72h_7J0N0Y/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=B72h_7J0N0Y', tags: 'türkçe pop' },
-      { id: '16', name: 'Bi Tek Ben Anlarım', artist_name: 'KÖFN', image: 'https://i.ytimg.com/vi/3N7V8M1YgH8/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=3N7V8M1YgH8', tags: 'türkçe pop viral' },
-      { id: '17', name: 'İsabelle', artist_name: 'Sefo & Capo', image: 'https://i.ytimg.com/vi/k6k-2N3E4Yg/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=k6k-2N3E4Yg', tags: 'türkçe pop rap' },
-      { id: '18', name: 'Araba', artist_name: 'Sefo', image: 'https://i.ytimg.com/vi/Wb3x1H8_g0Q/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=Wb3x1H8_g0Q', tags: 'türkçe pop' },
-      { id: '19', name: 'NKBİ X YAPAMAM', artist_name: 'Lvbel C5', image: 'https://i.ytimg.com/vi/M7p-w-s6wUo/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=M7p-w-s6wUo', tags: 'türkçe rap' },
-      { id: '20', name: 'Dalgası', artist_name: 'Uzi', image: 'https://i.ytimg.com/vi/5-2XW4_uLz4/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=5-2XW4_uLz4', tags: 'türkçe rap drill' },
-      { id: '21', name: 'Paparazzi', artist_name: 'Uzi', image: 'https://i.ytimg.com/vi/7K2P1P2g7N0/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=7K2P1P2g7N0', tags: 'türkçe rap' },
-      { id: '22', name: 'Mingofal', artist_name: 'Cakal', image: 'https://i.ytimg.com/vi/wA5Y8A5m8W4/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=wA5Y8A5m8W4', tags: 'türkçe rap drill' },
-      { id: '23', name: 'Ali Cabbar', artist_name: 'Emir Can İğrek', image: 'https://i.ytimg.com/vi/f0W-O6jR-18/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=f0W-O6jR-18', tags: 'türkçe pop slow' },
-      { id: '24', name: 'Affetmem', artist_name: 'Bergen', image: 'https://i.ytimg.com/vi/zW2d4A0kQ9I/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=zW2d4A0kQ9I', tags: 'türkçe arabesk' },
+      { id: '12', name: 'İmdat', artist_name: 'Cakal', image: 'https://i.ytimg.com/vi/A5fM2_5bKjQ/0.jpg', audio: 'https://www.youtube.com/watch?v=A5fM2_5bKjQ', tags: 'türkçe rap drill' },
+      { id: '13', name: 'Bilmem Mi?', artist_name: 'Sefo', image: 'https://i.ytimg.com/vi/WdG9e0T03f0/0.jpg', audio: 'https://www.youtube.com/watch?v=WdG9e0T03f0', tags: 'türkçe pop rap' },
+      { id: '14', name: 'Gecelerin Derdi', artist_name: 'Lvbel C5', image: 'https://i.ytimg.com/vi/U2V_J02e078/0.jpg', audio: 'https://www.youtube.com/watch?v=U2V_J02e078', tags: 'türkçe drill' },
+      { id: '15', name: 'Antidepresan', artist_name: 'Mabel Matiz & Mert Demir', image: 'https://i.ytimg.com/vi/B72h_7J0N0Y/0.jpg', audio: 'https://www.youtube.com/watch?v=B72h_7J0N0Y', tags: 'türkçe pop' },
+      { id: '16', name: 'Bi Tek Ben Anlarım', artist_name: 'KÖFN', image: 'https://i.ytimg.com/vi/3N7V8M1YgH8/0.jpg', audio: 'https://www.youtube.com/watch?v=3N7V8M1YgH8', tags: 'türkçe pop viral' },
+      { id: '17', name: 'İsabelle', artist_name: 'Sefo & Capo', image: 'https://i.ytimg.com/vi/k6k-2N3E4Yg/0.jpg', audio: 'https://www.youtube.com/watch?v=k6k-2N3E4Yg', tags: 'türkçe pop rap' },
+      { id: '18', name: 'Araba', artist_name: 'Sefo', image: 'https://i.ytimg.com/vi/Wb3x1H8_g0Q/0.jpg', audio: 'https://www.youtube.com/watch?v=Wb3x1H8_g0Q', tags: 'türkçe pop' },
+      { id: '19', name: 'NKBİ X YAPAMAM', artist_name: 'Lvbel C5', image: 'https://i.ytimg.com/vi/M7p-w-s6wUo/0.jpg', audio: 'https://www.youtube.com/watch?v=M7p-w-s6wUo', tags: 'türkçe rap' },
+      { id: '20', name: 'Dalgası', artist_name: 'Uzi', image: 'https://i.ytimg.com/vi/5-2XW4_uLz4/0.jpg', audio: 'https://www.youtube.com/watch?v=5-2XW4_uLz4', tags: 'türkçe rap drill' },
+      { id: '21', name: 'Paparazzi', artist_name: 'Uzi', image: 'https://i.ytimg.com/vi/7K2P1P2g7N0/0.jpg', audio: 'https://www.youtube.com/watch?v=7K2P1P2g7N0', tags: 'türkçe rap' },
+      { id: '22', name: 'Mingofal', artist_name: 'Cakal', image: 'https://i.ytimg.com/vi/wA5Y8A5m8W4/0.jpg', audio: 'https://www.youtube.com/watch?v=wA5Y8A5m8W4', tags: 'türkçe rap drill' },
+      { id: '23', name: 'Ali Cabbar', artist_name: 'Emir Can İğrek', image: 'https://i.ytimg.com/vi/f0W-O6jR-18/0.jpg', audio: 'https://www.youtube.com/watch?v=f0W-O6jR-18', tags: 'türkçe pop slow' },
+      { id: '24', name: 'Affetmem', artist_name: 'Bergen', image: 'https://i.ytimg.com/vi/zW2d4A0kQ9I/0.jpg', audio: 'https://www.youtube.com/watch?v=zW2d4A0kQ9I', tags: 'türkçe arabesk' },
 
       // LOFI & CHILL (KODLAMA / ÇALIŞMA MÜZİKLERİ)
-      { id: '25', name: 'Lofi Girl - Relaxing Beats', artist_name: 'Lofi Girl', image: 'https://i.ytimg.com/vi/jfKfPfyJRdk/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=jfKfPfyJRdk', tags: 'lofi study chill stream' },
-      { id: '26', name: 'Synthwave Radio', artist_name: 'Nightride', image: 'https://i.ytimg.com/vi/4xDzrHKX110/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=4xDzrHKX110', tags: 'synthwave chill stream' },
-      { id: '27', name: 'Coding Music Hacking', artist_name: 'Hacker', image: 'https://i.ytimg.com/vi/M5QY2_8704o/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=M5QY2_8704o', tags: 'coding cyberpunk' },
-      { id: '28', name: 'Chillhop Radio', artist_name: 'Chillhop', image: 'https://i.ytimg.com/vi/5yx6BWlEVcY/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=5yx6BWlEVcY', tags: 'lofi hiphop stream' },
+      { id: '25', name: 'Lofi Girl - Relaxing Beats', artist_name: 'Lofi Girl', image: 'https://i.ytimg.com/vi/jfKfPfyJRdk/0.jpg', audio: 'https://www.youtube.com/watch?v=jfKfPfyJRdk', tags: 'lofi study chill stream' },
+      { id: '26', name: 'Synthwave Radio', artist_name: 'Nightride', image: 'https://i.ytimg.com/vi/4xDzrHKX110/0.jpg', audio: 'https://www.youtube.com/watch?v=4xDzrHKX110', tags: 'synthwave chill stream' },
+      { id: '27', name: 'Coding Music Hacking', artist_name: 'Hacker', image: 'https://i.ytimg.com/vi/M5QY2_8704o/0.jpg', audio: 'https://www.youtube.com/watch?v=M5QY2_8704o', tags: 'coding cyberpunk' },
+      { id: '28', name: 'Chillhop Radio', artist_name: 'Chillhop', image: 'https://i.ytimg.com/vi/5yx6BWlEVcY/0.jpg', audio: 'https://www.youtube.com/watch?v=5yx6BWlEVcY', tags: 'lofi hiphop stream' },
       
       // YABANCI VIRAL & HIPHOP
-      { id: '29', name: 'Starboy', artist_name: 'The Weeknd', image: 'https://i.ytimg.com/vi/34Na4j8HLjc/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=34Na4j8HLjc', tags: 'yabancı pop viral' },
-      { id: '30', name: 'Without Me', artist_name: 'Eminem', image: 'https://i.ytimg.com/vi/YVkUvmDQ3HY/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=YVkUvmDQ3HY', tags: 'rap classic' },
-      { id: '31', name: 'Mockingbird', artist_name: 'Eminem', image: 'https://i.ytimg.com/vi/S9bPNsIqPIA/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=S9bPNsIqPIA', tags: 'rap emotional' },
-      { id: '32', name: 'In Da Club', artist_name: '50 Cent', image: 'https://i.ytimg.com/vi/5qm8Phr18cI/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=5qm8Phr18cI', tags: 'rap gym classic' },
-      { id: '33', name: 'Till I Collapse', artist_name: 'Eminem', image: 'https://i.ytimg.com/vi/ytQ5CYE1VZw/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=ytQ5CYE1VZw', tags: 'workout rap hard' },
-      { id: '34', name: 'Can\'t Hold Us', artist_name: 'Macklemore', image: 'https://i.ytimg.com/vi/2zNSgSzhBfM/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=2zNSgSzhBfM', tags: 'workout motivation pop' },
-      { id: '35', name: 'Lose Yourself', artist_name: 'Eminem', image: 'https://i.ytimg.com/vi/_Yhyp-_hX2s/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=_Yhyp-_hX2s', tags: 'workout rap motivation' },
+      { id: '29', name: 'Starboy', artist_name: 'The Weeknd', image: 'https://i.ytimg.com/vi/34Na4j8HLjc/0.jpg', audio: 'https://www.youtube.com/watch?v=34Na4j8HLjc', tags: 'yabancı pop viral' },
+      { id: '30', name: 'Without Me', artist_name: 'Eminem', image: 'https://i.ytimg.com/vi/YVkUvmDQ3HY/0.jpg', audio: 'https://www.youtube.com/watch?v=YVkUvmDQ3HY', tags: 'rap classic' },
+      { id: '31', name: 'Mockingbird', artist_name: 'Eminem', image: 'https://i.ytimg.com/vi/S9bPNsIqPIA/0.jpg', audio: 'https://www.youtube.com/watch?v=S9bPNsIqPIA', tags: 'rap emotional' },
+      { id: '32', name: 'In Da Club', artist_name: '50 Cent', image: 'https://i.ytimg.com/vi/5qm8Phr18cI/0.jpg', audio: 'https://www.youtube.com/watch?v=5qm8Phr18cI', tags: 'rap gym classic' },
+      { id: '33', name: 'Till I Collapse', artist_name: 'Eminem', image: 'https://i.ytimg.com/vi/ytQ5CYE1VZw/0.jpg', audio: 'https://www.youtube.com/watch?v=ytQ5CYE1VZw', tags: 'workout rap hard' },
+      { id: '34', name: 'Can\'t Hold Us', artist_name: 'Macklemore', image: 'https://i.ytimg.com/vi/2zNSgSzhBfM/0.jpg', audio: 'https://www.youtube.com/watch?v=2zNSgSzhBfM', tags: 'workout motivation pop' },
+      { id: '35', name: 'Lose Yourself', artist_name: 'Eminem', image: 'https://i.ytimg.com/vi/_Yhyp-_hX2s/0.jpg', audio: 'https://www.youtube.com/watch?v=_Yhyp-_hX2s', tags: 'workout rap motivation' },
       
       // EXTRA TÜRKÇE
-      { id: '36', name: 'Yengeniz Çıldırmış Olmalı', artist_name: 'Mode XL', image: 'https://i.ytimg.com/vi/5-E9A0H3f6w/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=5-E9A0H3f6w', tags: 'türkçe rap classic' },
-      { id: '37', name: 'Mekanın Sahibi', artist_name: 'Norm Ender', image: 'https://i.ytimg.com/vi/P11_aQYhTiw/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=P11_aQYhTiw', tags: 'türkçe rap diss' },
-      { id: '38', name: 'Neyim Var Ki', artist_name: 'Ceza ft. Sagopa', image: 'https://i.ytimg.com/vi/A9Hq_QnQnCQ/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=A9Hq_QnQnCQ', tags: 'türkçe rap efsane' },
-      { id: '39', name: 'Fark Var', artist_name: 'Ceza', image: 'https://i.ytimg.com/vi/T1j0_N7Wq7g/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=T1j0_N7Wq7g', tags: 'türkçe rap hızlı' },
-      { id: '40', name: 'Ateşten Gömlek', artist_name: 'Sagopa Kajmer', image: 'https://i.ytimg.com/vi/f0-4Vv4e910/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=f0-4Vv4e910', tags: 'türkçe rap slow' },
-      { id: '41', name: 'Bana Sor', artist_name: 'Müslüm Gürses', image: 'https://i.ytimg.com/vi/R_1Q11v7_W0/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=R_1Q11v7_W0', tags: 'türkçe arabesk damar' },
-      { id: '42', name: 'Paramparça', artist_name: 'Müslüm Gürses', image: 'https://i.ytimg.com/vi/P1-M-z6X8y0/mqdefault.jpg', audio: 'https://www.youtube.com/watch?v=P1-M-z6X8y0', tags: 'türkçe arabesk efsane' },
+      { id: '36', name: 'Yengeniz Çıldırmış Olmalı', artist_name: 'Mode XL', image: 'https://i.ytimg.com/vi/5-E9A0H3f6w/0.jpg', audio: 'https://www.youtube.com/watch?v=5-E9A0H3f6w', tags: 'türkçe rap classic' },
+      { id: '37', name: 'Mekanın Sahibi', artist_name: 'Norm Ender', image: 'https://i.ytimg.com/vi/P11_aQYhTiw/0.jpg', audio: 'https://www.youtube.com/watch?v=P11_aQYhTiw', tags: 'türkçe rap diss' },
+      { id: '38', name: 'Neyim Var Ki', artist_name: 'Ceza ft. Sagopa', image: 'https://i.ytimg.com/vi/A9Hq_QnQnCQ/0.jpg', audio: 'https://www.youtube.com/watch?v=A9Hq_QnQnCQ', tags: 'türkçe rap efsane' },
+      { id: '39', name: 'Fark Var', artist_name: 'Ceza', image: 'https://i.ytimg.com/vi/T1j0_N7Wq7g/0.jpg', audio: 'https://www.youtube.com/watch?v=T1j0_N7Wq7g', tags: 'türkçe rap hızlı' },
+      { id: '40', name: 'Ateşten Gömlek', artist_name: 'Sagopa Kajmer', image: 'https://i.ytimg.com/vi/f0-4Vv4e910/0.jpg', audio: 'https://www.youtube.com/watch?v=f0-4Vv4e910', tags: 'türkçe rap slow' },
+      { id: '41', name: 'Bana Sor', artist_name: 'Müslüm Gürses', image: 'https://i.ytimg.com/vi/R_1Q11v7_W0/0.jpg', audio: 'https://www.youtube.com/watch?v=R_1Q11v7_W0', tags: 'türkçe arabesk damar' },
+      { id: '42', name: 'Paramparça', artist_name: 'Müslüm Gürses', image: 'https://i.ytimg.com/vi/P1-M-z6X8y0/0.jpg', audio: 'https://www.youtube.com/watch?v=P1-M-z6X8y0', tags: 'türkçe arabesk efsane' },
     ];
 
     setTimeout(() => {
@@ -204,7 +204,7 @@ export default function MusicTab() {
                     const match = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/);
                     const videoId = (match && match[2].length === 11) ? match[2] : null;
                     if (!videoId) { alert("Geçersiz link"); return; }
-                    const newTrack = { id: videoId, name: "Özel Şarkı", artist_name: "Senin Seçimin", image: `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`, audio: url, tags: "özel" };
+                    const newTrack = { id: videoId, name: "Özel Şarkı", artist_name: "Senin Seçimin", image: `https://i.ytimg.com/vi/${videoId}/0.jpg`, audio: url, tags: "özel" };
                     setTracks([newTrack, ...tracks]);
                     playTrack(newTrack);
                   }}
