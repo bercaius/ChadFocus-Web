@@ -38,12 +38,19 @@ export default function RootLayout({ children }) {
               if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/sw.js');
               }
+              // Prevent right clicking on images globally
+              document.addEventListener('contextmenu', function(e) {
+                if(e.target.tagName === 'IMG') e.preventDefault();
+              });
             })();
           `
         }} />
         <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
       </head>
-      <body className="antialiased" style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+      <body 
+        className="antialiased" 
+        style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)' }}
+      >
         <AuthProvider>
           <EliteCursor />
           <SmoothScroll>

@@ -62,7 +62,7 @@ export default function EliteCursor() {
           opacity: isHovering ? 0.8 : 0.4,
           backgroundColor: isHovering ? 'rgba(255,215,0,0.1)' : 'transparent'
         }}
-        transition={{ type: 'spring', mass: 0.1, stiffness: 200, damping: 20 }}
+        transition={{ type: 'spring', mass: 0.05, stiffness: 800, damping: 40 }}
       />
       
       {/* Inner Dot */}
@@ -73,7 +73,7 @@ export default function EliteCursor() {
           y: mousePosition.y - 4,
           scale: isHovering ? 0.5 : 1,
         }}
-        transition={{ type: 'spring', mass: 0.05, stiffness: 300, damping: 25 }}
+        transition={{ type: 'spring', mass: 0.01, stiffness: 1000, damping: 30 }}
       />
     </>
   );

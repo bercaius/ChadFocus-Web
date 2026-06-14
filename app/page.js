@@ -327,7 +327,7 @@ export default function Home() {
       <motion.div 
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}
         className="min-h-screen bg-cover bg-center flex items-center justify-center relative p-4"
-        style={{ backgroundImage: "url('/images/wallpaper_1.png?v=3')" }}
+        style={{ backgroundImage: "url('/images/wallpaper_main.png')" }}
       >
         <div className="absolute inset-0 bg-black/90 backdrop-blur-md z-0" />
         
@@ -440,9 +440,9 @@ export default function Home() {
         <main className="relative z-10 max-w-4xl mx-auto text-center my-auto py-12 space-y-8">
           <motion.h2 
             initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase leading-none max-w-3xl mx-auto"
+            className="text-6xl md:text-8xl font-black tracking-tighter text-white uppercase leading-none max-w-3xl mx-auto"
           >
-            ORTALAMA YAŞAMDAN KURTUL, <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-200 to-zinc-500">POTANSİYELİNİ ZİRVEYE TAŞ.</span>
+            CHAD<span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-200 to-zinc-600">FOCUS</span>
           </motion.h2>
           
           <motion.p 
