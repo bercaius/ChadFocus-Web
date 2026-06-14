@@ -236,7 +236,7 @@ export default function RoomTab() {
                 </div>
               ) : (
                 <div className="text-center text-zinc-500 flex flex-col items-center">
-                  <Youtube className="w-16 h-16 mb-4 opacity-30" />
+                  <Tv className="w-16 h-16 mb-4 opacity-30" />
                   <p className="text-sm font-medium">Video veya müzik oynatılmıyor.</p>
                   <p className="text-xs mt-1">Aşağıdan bir Youtube linki yapıştırın.</p>
                 </div>
@@ -245,7 +245,7 @@ export default function RoomTab() {
 
             {/* Video Controls (Only Host or Anyone can change) */}
             <form onSubmit={syncYoutubeVideo} className="p-4 bg-[#2B2D31] border-t border-zinc-800 flex gap-2">
-              <Youtube className="w-10 h-10 p-2 bg-red-500/20 text-red-500 rounded-lg flex-shrink-0" />
+              <Tv className="w-10 h-10 p-2 bg-red-500/20 text-red-500 rounded-lg flex-shrink-0" />
               <input 
                 type="text" 
                 value={youtubeUrl}

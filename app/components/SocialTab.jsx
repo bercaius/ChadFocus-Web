@@ -131,11 +131,24 @@ export default function SocialTab() {
                       className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-9 pr-4 py-2.5 text-xs text-white focus:border-pink-500 outline-none"
                     />
                   </div>
-                  <div className="text-center py-8">
-                    <p className="text-xs text-zinc-500 mb-4">Gelişmiş arama ve eşleştirme motoru Alpha statüsünde.</p>
-                    <button className="px-6 py-2 bg-pink-500/20 text-pink-400 font-bold text-xs rounded-xl hover:bg-pink-500 hover:text-white transition-colors">
-                      SİSTEMDE ARA
-                    </button>
+                  <div className="space-y-1 mt-4">
+                    {searchResults.filter(u => u.name?.toLowerCase().includes(searchQuery.toLowerCase())).map((u, i) => (
+                      <button key={i} onClick={() => { setActiveSubTab('dm'); setActiveDM(u); }} className="w-full text-left p-3 rounded-xl hover:bg-zinc-800/50 flex items-center gap-3 transition-colors">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-xs">
+                          {u.name?.[0] || '?'}
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-sm font-bold text-zinc-200">{u.name}</div>
+                          <div className="text-[10px] text-zinc-500 font-medium">Badici ID: {u.uid?.substring(0,6)}...</div>
+                        </div>
+                        <UserPlus className="w-4 h-4 text-zinc-500 hover:text-pink-400" />
+                      </button>
+                    ))}
+                    {searchResults.length === 0 && (
+                      <div className="text-center py-8">
+                         <p className="text-xs text-zinc-500 mb-4">Gelişmiş arama motoru çevrimiçi kimseyi bulamadı.</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
