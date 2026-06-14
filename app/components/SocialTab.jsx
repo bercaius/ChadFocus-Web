@@ -12,6 +12,8 @@ export default function SocialTab() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [requests, setRequests] = useState([]);
+  const [friends, setFriends] = useState([]);
+  const [loadingSearch, setLoadingSearch] = useState(false);
   const [activeDM, setActiveDM] = useState(null);
   const [dmMessages, setDmMessages] = useState([]);
   const [msgInput, setMsgInput] = useState('');

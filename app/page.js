@@ -327,7 +327,7 @@ export default function Home() {
       <motion.div 
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}
         className="min-h-screen bg-cover bg-center flex items-center justify-center relative p-4"
-        style={{ backgroundImage: "url('/images/wallpaper_main.png')" }}
+        style={{ backgroundImage: "url('/images/wallpaper_main.jpg')" }}
       >
         <div className="absolute inset-0 bg-black/90 backdrop-blur-md z-0" />
         

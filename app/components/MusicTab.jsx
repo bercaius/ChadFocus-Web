@@ -3,6 +3,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Play, Pause, SkipForward, SkipBack, Search, Download, Music, Plus, Library, X, Edit2 } from 'lucide-react';
 import { useLocalStorage } from '@/lib/useLocalStorage';
+import dynamic from 'next/dynamic';
+
+// Next.js client-side only import for ReactPlayer to avoid hydration mismatch
+const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 
 export default function MusicTab() {
   const [tracks, setTracks] = useState([]);
@@ -20,14 +24,59 @@ export default function MusicTab() {
 
   const fetchMusic = async (searchQuery) => {
     setLoading(true);
-    // Hardcoded elite library to avoid free API limits and ensure 100% uptime
+    // Dev devasa YouTube müzik arşivi (Phonk, Türkçe Pop, Drill, Motivasyon)
     const premiumTracks = [
-      { id: '1', name: 'GigaChad Theme (Phonk)', artist_name: 'ChadBeats', image: '/images/app_logo.png?v=3', audio: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_24847f9f30.mp3?filename=phonk-brazilian-114259.mp3', tags: 'phonk workout' },
-      { id: '2', name: 'Discipline Over Motivation', artist_name: 'GymPhonk', image: '/images/wallpaper_1.png?v=3', audio: 'https://cdn.pixabay.com/download/audio/2022/01/21/audio_403c9c676d.mp3?filename=aggressive-phonk-106456.mp3', tags: 'phonk dark' },
-      { id: '3', name: 'Late Night Coding Lofi', artist_name: 'ChillStudio', image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80', audio: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf589.mp3', tags: 'lofi study' },
-      { id: '4', name: 'Sigma Grindset', artist_name: 'AlphaWave', image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=80', audio: 'https://cdn.pixabay.com/download/audio/2022/10/14/audio_9939f792cb.mp3', tags: 'phonk workout sigma' },
-      { id: '5', name: 'Deep Focus Ambient', artist_name: 'BrainWaves', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80', audio: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3', tags: 'lofi study focus' },
-      { id: '6', name: 'Midnight Run Synthwave', artist_name: 'Retro80s', image: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=400&q=80', audio: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3', tags: 'synthwave run' }
+      // GYM & PHONK & MOTIVATION
+      { id: '1', name: 'GigaChad Theme (Phonk)', artist_name: 'g3ox_em', image: 'https://i.ytimg.com/vi/1_zVWkpeGoE/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=1_zVWkpeGoE', tags: 'phonk workout chad' },
+      { id: '2', name: 'Metamorphosis', artist_name: 'Interworld', image: 'https://i.ytimg.com/vi/SjZgE7uPOrk/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=SjZgE7uPOrk', tags: 'phonk workout dark' },
+      { id: '3', name: 'Sahara', artist_name: 'Hensonn', image: 'https://i.ytimg.com/vi/Q281a_sH3kQ/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=Q281a_sH3kQ', tags: 'phonk' },
+      { id: '4', name: 'Neon Blade', artist_name: 'MoonDeity', image: 'https://i.ytimg.com/vi/1mYnU5a0p60/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=1mYnU5a0p60', tags: 'phonk gym drift' },
+      { id: '5', name: 'Murder In My Mind', artist_name: 'Kordhell', image: 'https://i.ytimg.com/vi/y-t-D9_zX9M/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=y-t-D9_zX9M', tags: 'phonk workout hard' },
+      { id: '6', name: 'Disaster', artist_name: 'KSLV', image: 'https://i.ytimg.com/vi/v2dKIn72FXY/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=v2dKIn72FXY', tags: 'phonk drift dark' },
+      { id: '7', name: 'Rave', artist_name: 'Dxrk', image: 'https://i.ytimg.com/vi/PTZcgZaIgNw/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=PTZcgZaIgNw', tags: 'phonk rave' },
+      { id: '8', name: 'Polozhenie', artist_name: 'Zedline', image: 'https://i.ytimg.com/vi/q43n21E-3pE/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=q43n21E-3pE', tags: 'sigma grindset' },
+      { id: '9', name: 'Vendetta', artist_name: 'MUPP', image: 'https://i.ytimg.com/vi/7vQxS_e2rEE/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=7vQxS_e2rEE', tags: 'phonk angry' },
+      { id: '10', name: 'Wake Up', artist_name: 'MoonDeity', image: 'https://i.ytimg.com/vi/h2l0QvM8KCQ/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=h2l0QvM8KCQ', tags: 'phonk sigma' },
+      { id: '11', name: 'Life Is A Highway', artist_name: 'Rascal Flatts', image: 'https://i.ytimg.com/vi/5tXh_MfrMe0/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=5tXh_MfrMe0', tags: 'cars motivation' },
+      
+      // TÜRKÇE DRILL & RAP & VIRAL
+      { id: '12', name: 'İmdat', artist_name: 'Cakal', image: 'https://i.ytimg.com/vi/A5fM2_5bKjQ/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=A5fM2_5bKjQ', tags: 'türkçe rap drill' },
+      { id: '13', name: 'Bilmem Mi?', artist_name: 'Sefo', image: 'https://i.ytimg.com/vi/WdG9e0T03f0/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=WdG9e0T03f0', tags: 'türkçe pop rap' },
+      { id: '14', name: 'Gecelerin Derdi', artist_name: 'Lvbel C5', image: 'https://i.ytimg.com/vi/U2V_J02e078/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=U2V_J02e078', tags: 'türkçe drill' },
+      { id: '15', name: 'Antidepresan', artist_name: 'Mabel Matiz & Mert Demir', image: 'https://i.ytimg.com/vi/B72h_7J0N0Y/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=B72h_7J0N0Y', tags: 'türkçe pop' },
+      { id: '16', name: 'Bi Tek Ben Anlarım', artist_name: 'KÖFN', image: 'https://i.ytimg.com/vi/3N7V8M1YgH8/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=3N7V8M1YgH8', tags: 'türkçe pop viral' },
+      { id: '17', name: 'İsabelle', artist_name: 'Sefo & Capo', image: 'https://i.ytimg.com/vi/k6k-2N3E4Yg/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=k6k-2N3E4Yg', tags: 'türkçe pop rap' },
+      { id: '18', name: 'Araba', artist_name: 'Sefo', image: 'https://i.ytimg.com/vi/Wb3x1H8_g0Q/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=Wb3x1H8_g0Q', tags: 'türkçe pop' },
+      { id: '19', name: 'NKBİ X YAPAMAM', artist_name: 'Lvbel C5', image: 'https://i.ytimg.com/vi/M7p-w-s6wUo/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=M7p-w-s6wUo', tags: 'türkçe rap' },
+      { id: '20', name: 'Dalgası', artist_name: 'Uzi', image: 'https://i.ytimg.com/vi/5-2XW4_uLz4/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=5-2XW4_uLz4', tags: 'türkçe rap drill' },
+      { id: '21', name: 'Paparazzi', artist_name: 'Uzi', image: 'https://i.ytimg.com/vi/7K2P1P2g7N0/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=7K2P1P2g7N0', tags: 'türkçe rap' },
+      { id: '22', name: 'Mingofal', artist_name: 'Cakal', image: 'https://i.ytimg.com/vi/wA5Y8A5m8W4/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=wA5Y8A5m8W4', tags: 'türkçe rap drill' },
+      { id: '23', name: 'Ali Cabbar', artist_name: 'Emir Can İğrek', image: 'https://i.ytimg.com/vi/f0W-O6jR-18/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=f0W-O6jR-18', tags: 'türkçe pop slow' },
+      { id: '24', name: 'Affetmem', artist_name: 'Bergen', image: 'https://i.ytimg.com/vi/zW2d4A0kQ9I/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=zW2d4A0kQ9I', tags: 'türkçe arabesk' },
+
+      // LOFI & CHILL (KODLAMA / ÇALIŞMA MÜZİKLERİ)
+      { id: '25', name: 'Lofi Girl - Relaxing Beats', artist_name: 'Lofi Girl', image: 'https://i.ytimg.com/vi/jfKfPfyJRdk/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=jfKfPfyJRdk', tags: 'lofi study chill stream' },
+      { id: '26', name: 'Synthwave Radio', artist_name: 'Nightride', image: 'https://i.ytimg.com/vi/4xDzrHKX110/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=4xDzrHKX110', tags: 'synthwave chill stream' },
+      { id: '27', name: 'Coding Music Hacking', artist_name: 'Hacker', image: 'https://i.ytimg.com/vi/M5QY2_8704o/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=M5QY2_8704o', tags: 'coding cyberpunk' },
+      { id: '28', name: 'Chillhop Radio', artist_name: 'Chillhop', image: 'https://i.ytimg.com/vi/5yx6BWlEVcY/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=5yx6BWlEVcY', tags: 'lofi hiphop stream' },
+      
+      // YABANCI VIRAL & HIPHOP
+      { id: '29', name: 'Starboy', artist_name: 'The Weeknd', image: 'https://i.ytimg.com/vi/34Na4j8HLjc/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=34Na4j8HLjc', tags: 'yabancı pop viral' },
+      { id: '30', name: 'Without Me', artist_name: 'Eminem', image: 'https://i.ytimg.com/vi/YVkUvmDQ3HY/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=YVkUvmDQ3HY', tags: 'rap classic' },
+      { id: '31', name: 'Mockingbird', artist_name: 'Eminem', image: 'https://i.ytimg.com/vi/S9bPNsIqPIA/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=S9bPNsIqPIA', tags: 'rap emotional' },
+      { id: '32', name: 'In Da Club', artist_name: '50 Cent', image: 'https://i.ytimg.com/vi/5qm8Phr18cI/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=5qm8Phr18cI', tags: 'rap gym classic' },
+      { id: '33', name: 'Till I Collapse', artist_name: 'Eminem', image: 'https://i.ytimg.com/vi/ytQ5CYE1VZw/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=ytQ5CYE1VZw', tags: 'workout rap hard' },
+      { id: '34', name: 'Can\'t Hold Us', artist_name: 'Macklemore', image: 'https://i.ytimg.com/vi/2zNSgSzhBfM/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=2zNSgSzhBfM', tags: 'workout motivation pop' },
+      { id: '35', name: 'Lose Yourself', artist_name: 'Eminem', image: 'https://i.ytimg.com/vi/_Yhyp-_hX2s/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=_Yhyp-_hX2s', tags: 'workout rap motivation' },
+      
+      // EXTRA TÜRKÇE
+      { id: '36', name: 'Yengeniz Çıldırmış Olmalı', artist_name: 'Mode XL', image: 'https://i.ytimg.com/vi/5-E9A0H3f6w/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=5-E9A0H3f6w', tags: 'türkçe rap classic' },
+      { id: '37', name: 'Mekanın Sahibi', artist_name: 'Norm Ender', image: 'https://i.ytimg.com/vi/P11_aQYhTiw/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=P11_aQYhTiw', tags: 'türkçe rap diss' },
+      { id: '38', name: 'Neyim Var Ki', artist_name: 'Ceza ft. Sagopa', image: 'https://i.ytimg.com/vi/A9Hq_QnQnCQ/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=A9Hq_QnQnCQ', tags: 'türkçe rap efsane' },
+      { id: '39', name: 'Fark Var', artist_name: 'Ceza', image: 'https://i.ytimg.com/vi/T1j0_N7Wq7g/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=T1j0_N7Wq7g', tags: 'türkçe rap hızlı' },
+      { id: '40', name: 'Ateşten Gömlek', artist_name: 'Sagopa Kajmer', image: 'https://i.ytimg.com/vi/f0-4Vv4e910/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=f0-4Vv4e910', tags: 'türkçe rap slow' },
+      { id: '41', name: 'Bana Sor', artist_name: 'Müslüm Gürses', image: 'https://i.ytimg.com/vi/R_1Q11v7_W0/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=R_1Q11v7_W0', tags: 'türkçe arabesk damar' },
+      { id: '42', name: 'Paramparça', artist_name: 'Müslüm Gürses', image: 'https://i.ytimg.com/vi/P1-M-z6X8y0/hqdefault.jpg', audio: 'https://www.youtube.com/watch?v=P1-M-z6X8y0', tags: 'türkçe arabesk efsane' },
     ];
 
     setTimeout(() => {
@@ -44,17 +93,10 @@ export default function MusicTab() {
 
   const playTrack = (track) => {
     if (currentTrack?.id === track.id) {
-      if (isPlaying) {
-        audioRef.current.pause();
-        setIsPlaying(false);
-      } else {
-        audioRef.current.play();
-        setIsPlaying(true);
-      }
+      setIsPlaying(!isPlaying);
     } else {
       setCurrentTrack(track);
       setIsPlaying(true);
-      setTimeout(() => audioRef.current?.play(), 100);
     }
   };
 
@@ -178,7 +220,19 @@ export default function MusicTab() {
               </div>
             </div>
           )}
-          <audio ref={audioRef} src={currentTrack?.audio} onEnded={nextTrack} className="hidden" />
+          
+          {/* ReactPlayer running invisibly for Audio */}
+          {currentTrack && (
+            <ReactPlayer 
+              url={currentTrack.audio} 
+              playing={isPlaying} 
+              onEnded={nextTrack}
+              width="0" 
+              height="0" 
+              style={{ display: 'none' }}
+              config={{ youtube: { playerVars: { origin: 'https://chadfocus.tr' } } }}
+            />
+          )}
 
           {/* VIEWS */}
           {activeView === 'discover' && (
