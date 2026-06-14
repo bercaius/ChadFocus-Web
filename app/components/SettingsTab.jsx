@@ -183,7 +183,7 @@ export default function SettingsTab({ theme, themes, onChangeTheme, onReset, use
           <p className="text-[9px] tracking-wider uppercase" style={{color:'var(--text-dim)'}}>
             stüdyo · <a href="https://www.instagram.com/turcodevelopstudio/" target="_blank" rel="noopener" style={{color:'#CD7F32'}}>@turcodevelopstudio</a>
           </p>
-          <p className="text-[8px] mt-2" style={{color:'var(--text-dim)'}}>ChadFocus Web Demo · v1.0 · 2026</p>
+          <p className="text-[8px] mt-2" style={{color:'var(--text-dim)'}}>ChadFocus Web Demo · v0.0.5 · 2026</p>
         </div>
       </div>
     </div>
