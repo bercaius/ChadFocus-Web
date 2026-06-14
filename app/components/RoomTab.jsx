@@ -41,16 +41,24 @@ export default function RoomTab() {
   };
 
   const createRoom = async () => {
-    if (!user) return;
+    if (!user) {
+      alert("Oda kurmak için giriş yapmalısın.");
+      return;
+    }
     const newCode = generateRoomCode();
-    await setDoc(doc(db, 'rooms', newCode), {
-      createdAt: serverTimestamp(),
-      host: user.name,
-      hostId: user.uid,
-      youtubeVideoId: null, // Veri sızıntısı yapmayan ücretsiz iframe entegrasyonu
-      messages: []
-    });
-    setRoomId(newCode);
+    try {
+      await setDoc(doc(db, 'rooms', newCode), {
+        createdAt: serverTimestamp(),
+        host: user.name || "Anonim Badici",
+        hostId: user.uid,
+        youtubeVideoId: null,
+        messages: []
+      });
+      setRoomId(newCode);
+    } catch (error) {
+      console.error("Oda kurma hatası:", error);
+      alert("Oda kurulamadı! Firebase veritabanı kurallarını (rules) kontrol edin. Hata: " + error.message);
+    }
   };
 
   const joinRoom = () => {

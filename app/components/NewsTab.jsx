@@ -12,17 +12,17 @@ export default function NewsTab() {
     setLoading(true);
     setError(null);
     try {
-      // TRT Haber RSS to JSON
-      const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.trthaber.com/xml_mobile.php');
+      // Dev.to API (Productivity & Tech) - Extremely reliable and fitting for ChadFocus
+      const res = await fetch('https://dev.to/api/articles?tag=productivity&per_page=15');
       const data = await res.json();
       
-      if (data.status === 'ok') {
-        setNews(data.items.slice(0, 15)); // First 15 items
+      if (Array.isArray(data)) {
+        setNews(data);
       } else {
         setError('Haberler yüklenirken bir sorun oluştu.');
       }
     } catch (err) {
-      setError('Bağlantı hatası.');
+      setError('Bağlantı hatası veya oran sınırı aşıldı.');
     }
     setLoading(false);
   };
@@ -40,10 +40,10 @@ export default function NewsTab() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[var(--text-color)] to-[var(--accent-color)] tracking-tight">
-                Gündem & Haberler
+                Chad Intelligence
               </h2>
               <p className="text-[var(--text-muted)] mt-2">
-                Dünyadan ve Türkiye'den son gelişmeler (TRT Haber)
+                Teknoloji, Üretkenlik ve Disiplin Makaleleri
               </p>
             </div>
             
@@ -70,15 +70,15 @@ export default function NewsTab() {
               {news.map((item, i) => (
                 <a 
                   key={i} 
-                  href={item.link} 
+                  href={item.url} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="group block bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-xl overflow-hidden hover:border-[var(--accent-color)] transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-[var(--accent-color)]/10"
                 >
-                  {item.thumbnail && (
+                  {item.cover_image && (
                     <div className="w-full h-48 overflow-hidden">
                       <img 
-                        src={item.thumbnail} 
+                        src={item.cover_image} 
                         alt={item.title} 
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                       />
@@ -86,7 +86,7 @@ export default function NewsTab() {
                   )}
                   <div className="p-5">
                     <p className="text-xs font-mono text-[var(--accent-color)] mb-2">
-                      {new Date(item.pubDate).toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit' })}
+                      {new Date(item.published_at).toLocaleDateString('tr-TR', { day: '2-digit', month: 'long' })}
                     </p>
                     <h3 className="font-bold text-[var(--text-color)] line-clamp-2 mb-3 group-hover:text-[var(--accent-color)] transition-colors">
                       {item.title}

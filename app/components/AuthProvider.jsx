@@ -1,7 +1,8 @@
 'use client';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { auth, googleProvider } from '@/lib/firebase';
+import { auth, googleProvider, db } from '@/lib/firebase';
 import { signInWithPopup, signOut, onAuthStateChanged, signInAnonymously, linkWithPopup } from 'firebase/auth';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 const AuthContext = createContext({
   user: null,
@@ -19,13 +20,22 @@ export default function AuthProvider({ children }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (usr) => {
       if (usr) {
-        setUser({
+        const userData = {
           uid: usr.uid,
           name: usr.displayName || "Misafir Badici",
           email: usr.email || "anonim@chadfocus.local",
           image: usr.photoURL || null,
           isAnonymous: usr.isAnonymous,
-        });
+        };
+        setUser(userData);
+        
+        // Save to Firestore so they appear in Social Tab
+        try {
+          setDoc(doc(db, 'users', usr.uid), {
+            ...userData,
+            lastSeen: serverTimestamp()
+          }, { merge: true });
+        } catch(e) { console.error("Kullanıcı kayıt hatası:", e); }
       } else {
         setUser(null);
       }

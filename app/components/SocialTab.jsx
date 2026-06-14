@@ -12,12 +12,47 @@ export default function SocialTab() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [requests, setRequests] = useState([]);
-  const [friends, setFriends] = useState([]);
-  const [loadingSearch, setLoadingSearch] = useState(false);
-  
   const [activeDM, setActiveDM] = useState(null);
   const [dmMessages, setDmMessages] = useState([]);
   const [msgInput, setMsgInput] = useState('');
+  
+  // 1. Fetch All Users (Discover & Friends)
+  useEffect(() => {
+    if (!user) return;
+    const q = query(collection(db, 'users'));
+    const unsub = onSnapshot(q, (snap) => {
+      const allUsers = snap.docs.map(d => ({id: d.id, ...d.data()})).filter(u => u.uid !== user.uid);
+      setFriends(allUsers);
+      setSearchResults(allUsers);
+    });
+    return () => unsub();
+  }, [user]);
+
+  // 2. Fetch DMs for activeDM
+  useEffect(() => {
+    if (!user || !activeDM) return;
+    const chatId = [user.uid, activeDM.uid].sort().join('_');
+    const q = query(collection(db, 'dms', chatId, 'messages'));
+    const unsub = onSnapshot(q, (snap) => {
+      const msgs = snap.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => a.createdAt - b.createdAt);
+      setDmMessages(msgs);
+    });
+    return () => unsub();
+  }, [user, activeDM]);
+
+  const sendDM = async (e) => {
+    e.preventDefault();
+    if (!msgInput.trim() || !activeDM || !user) return;
+    const chatId = [user.uid, activeDM.uid].sort().join('_');
+    
+    await addDoc(collection(db, 'dms', chatId, 'messages'), {
+      text: msgInput.trim(),
+      senderId: user.uid,
+      createdAt: serverTimestamp(),
+      time: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
+    });
+    setMsgInput('');
+  };
 
   return (
     <div className="flex-1 overflow-hidden p-4 md:p-8 flex flex-col relative z-10" style={{ maxHeight: 'calc(100vh - 4rem)' }}>
@@ -70,14 +105,14 @@ export default function SocialTab() {
                       </div>
                       <div className="flex-1">
                         <div className="text-sm font-bold text-zinc-200">{f.name}</div>
-                        <div className="text-[10px] text-green-500 font-medium">Çevrimiçi</div>
+                        <div className="text-[10px] text-green-500 font-medium">Topluluk Üyesi</div>
                       </div>
                     </button>
                   ))
                 ) : (
                   <div className="p-6 text-center text-zinc-600">
                     <Users className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-xs">Henüz kimseyi eklemedin.</p>
+                    <p className="text-xs">Sistemde aktif badici yok.</p>
                   </div>
                 )
               ) : null}
@@ -131,34 +166,40 @@ export default function SocialTab() {
                     <span className="text-[10px] px-3 py-1 bg-zinc-900 rounded-full text-zinc-500">Bugün</span>
                   </div>
                   
-                  <div className="flex items-start gap-2">
-                    <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center text-[10px] text-white">
-                      {activeDM.name?.[0] || '?'}
-                    </div>
-                    <div className="bg-zinc-800 text-zinc-200 text-sm px-4 py-2 rounded-2xl rounded-tl-none border border-zinc-700/50 max-w-[80%]">
-                      Selam kanka, bugünkü grind nasıl gidiyor? 50 şınav tamam mı?
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-2 flex-row-reverse">
-                    <div className="bg-pink-500 text-white text-sm px-4 py-2 rounded-2xl rounded-tr-none max-w-[80%]">
-                      Sorma yoruldum ama bitirdim. Sen?
-                    </div>
-                  </div>
+                  
+                  {dmMessages.length === 0 ? (
+                     <div className="text-center text-zinc-600 text-xs mt-4">Sohbeti başlatın. Şifrelenmiş mesajlar burada görünür.</div>
+                  ) : (
+                    dmMessages.map(msg => (
+                      <div key={msg.id} className={`flex items-start gap-2 ${msg.senderId === user?.uid ? 'flex-row-reverse' : ''}`}>
+                        {msg.senderId !== user?.uid && (
+                          <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center text-[10px] text-white">
+                            {activeDM.name?.[0] || '?'}
+                          </div>
+                        )}
+                        <div className={`text-sm px-4 py-2 max-w-[80%] ${msg.senderId === user?.uid ? 'bg-pink-500 text-white rounded-2xl rounded-tr-none' : 'bg-zinc-800 text-zinc-200 rounded-2xl rounded-tl-none border border-zinc-700/50'}`}>
+                          {msg.text}
+                          <span className="text-[9px] opacity-50 block mt-1 text-right">{msg.time}</span>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
 
-                <div className="p-4 border-t border-zinc-800/50 bg-black/20">
+                <form onSubmit={sendDM} className="p-4 border-t border-zinc-800/50 bg-black/20">
                   <div className="flex items-center gap-2">
                     <input 
                       type="text" 
+                      value={msgInput}
+                      onChange={(e) => setMsgInput(e.target.value)}
                       placeholder="Özel mesaj yaz..." 
                       className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white focus:border-pink-500 outline-none"
                     />
-                    <button className="p-3 bg-pink-500 text-white rounded-xl hover:scale-105 transition-all">
+                    <button type="submit" disabled={!msgInput.trim()} className="p-3 bg-pink-500 text-white rounded-xl hover:scale-105 disabled:opacity-50 transition-all">
                       <Send className="w-5 h-5" />
                     </button>
                   </div>
-                </div>
+                </form>
               </>
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center text-zinc-600 p-8 text-center">

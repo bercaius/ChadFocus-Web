@@ -20,21 +20,22 @@ export default function MusicTab() {
 
   const fetchMusic = async (searchQuery) => {
     setLoading(true);
-    try {
-      // Jamendo API for royalty-free music
-      const res = await fetch(`https://api.jamendo.com/v3.0/tracks/?client_id=56d30c95&format=jsonpretty&limit=20&tags=${searchQuery}&include=musicinfo`);
-      if (!res.ok) throw new Error("API Limit");
-      const data = await res.json();
-      if (data.results) setTracks(data.results);
-    } catch (err) {
-      console.error('Music fetch error:', err);
-      // Fallback dummy tracks if Jamendo is blocking or offline
-      setTracks([
-        { id: '1', name: 'Sigma Grindset Theme', artist_name: 'ChadBeats', image: '/images/app_logo.png?v=3', audio: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_24847f9f30.mp3?filename=phonk-brazilian-114259.mp3', audiodownload: '#' },
-        { id: '2', name: 'Discipline Over Motivation', artist_name: 'GymPhonk', image: '/images/wallpaper_1.png?v=3', audio: 'https://cdn.pixabay.com/download/audio/2022/01/21/audio_403c9c676d.mp3?filename=aggressive-phonk-106456.mp3', audiodownload: '#' }
-      ]);
-    }
-    setLoading(false);
+    // Hardcoded elite library to avoid free API limits and ensure 100% uptime
+    const premiumTracks = [
+      { id: '1', name: 'GigaChad Theme (Phonk)', artist_name: 'ChadBeats', image: '/images/app_logo.png?v=3', audio: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_24847f9f30.mp3?filename=phonk-brazilian-114259.mp3', tags: 'phonk workout' },
+      { id: '2', name: 'Discipline Over Motivation', artist_name: 'GymPhonk', image: '/images/wallpaper_1.png?v=3', audio: 'https://cdn.pixabay.com/download/audio/2022/01/21/audio_403c9c676d.mp3?filename=aggressive-phonk-106456.mp3', tags: 'phonk dark' },
+      { id: '3', name: 'Late Night Coding Lofi', artist_name: 'ChillStudio', image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80', audio: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf589.mp3', tags: 'lofi study' },
+      { id: '4', name: 'Sigma Grindset', artist_name: 'AlphaWave', image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=80', audio: 'https://cdn.pixabay.com/download/audio/2022/10/14/audio_9939f792cb.mp3', tags: 'phonk workout sigma' },
+      { id: '5', name: 'Deep Focus Ambient', artist_name: 'BrainWaves', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80', audio: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3', tags: 'lofi study focus' },
+      { id: '6', name: 'Midnight Run Synthwave', artist_name: 'Retro80s', image: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=400&q=80', audio: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3', tags: 'synthwave run' }
+    ];
+
+    setTimeout(() => {
+      const q = searchQuery.toLowerCase();
+      const filtered = premiumTracks.filter(t => t.name.toLowerCase().includes(q) || t.tags.includes(q) || t.artist_name.toLowerCase().includes(q));
+      setTracks(filtered.length > 0 ? filtered : premiumTracks);
+      setLoading(false);
+    }, 500); // Simulate network
   };
 
   useEffect(() => {
