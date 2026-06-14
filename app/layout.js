@@ -1,7 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/app/components/AuthProvider";
-
+import SmoothScroll from "@/app/components/SmoothScroll";
+import EliteCursor from "@/app/components/EliteCursor";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -43,7 +44,13 @@ export default function RootLayout({ children }) {
         <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
       </head>
       <body className="antialiased" style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <EliteCursor />
+          <SmoothScroll>
+            <div className="noise-overlay pointer-events-none fixed inset-0 z-50 opacity-[0.03] mix-blend-overlay"></div>
+            {children}
+          </SmoothScroll>
+        </AuthProvider>
       </body>
     </html>
   );

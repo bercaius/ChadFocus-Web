@@ -7,6 +7,7 @@ import { calcStats, getLevel, updateChart } from '@/lib/statsEngine';
 import { useAuth } from '@/app/components/AuthProvider';
 import { db } from '@/lib/firebase';
 import { doc, setDoc, onSnapshot } from 'firebase/firestore';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import DashboardTab from '@/app/components/DashboardTab';
 import HabitsTab from '@/app/components/HabitsTab';
@@ -323,13 +324,19 @@ export default function Home() {
   // ==================== 1. GOOGLE AUTH BARİYERİ (GOOGLE LOGIN) ====================
   if (!user) {
     return (
-      <div 
-        className="min-h-screen bg-cover bg-center flex items-center justify-center relative p-4 transition-all duration-1000"
+      <motion.div 
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}
+        className="min-h-screen bg-cover bg-center flex items-center justify-center relative p-4"
         style={{ backgroundImage: "url('/images/wallpaper_1.png?v=3')" }}
       >
         <div className="absolute inset-0 bg-black/90 backdrop-blur-md z-0" />
         
-        <div className="relative z-10 w-full max-w-sm p-8 bg-zinc-950/70 border border-zinc-900 backdrop-blur-xl rounded-3xl text-center shadow-[0_20px_100px_rgba(0,0,0,0.85)] space-y-6">
+        <motion.div 
+          initial={{ scale: 0.9, y: 20, opacity: 0 }}
+          animate={{ scale: 1, y: 0, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 100, damping: 20 }}
+          className="relative z-10 w-full max-w-sm p-8 bg-zinc-950/70 border border-zinc-900 backdrop-blur-xl rounded-3xl text-center shadow-[0_20px_100px_rgba(0,0,0,0.85)] space-y-6"
+        >
           <div className="flex flex-col items-center">
             {/* Elit Siyah-Beyaz Logo */}
             <img 
@@ -354,6 +361,7 @@ export default function Home() {
             <button 
               type="button" 
               onClick={signInWithGoogle} 
+              data-cursor="hover"
               className="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-zinc-100 hover:bg-white text-black font-black text-xs transition-all cursor-pointer shadow-lg active:scale-95"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -371,6 +379,7 @@ export default function Home() {
             <button 
               type="button" 
               onClick={signInAsGuest} 
+              data-cursor="hover"
               className="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-850 hover:border-zinc-700 font-black text-xs transition-all cursor-pointer shadow-lg active:scale-95"
             >
               MİSAFİR OLARAK GRIND'A BAŞLA
@@ -379,8 +388,8 @@ export default function Home() {
               Google girişi hata verirse misafir olarak devam edebilirsin. Verilerin anonim olarak saklanır.
             </p>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     );
   }
 
@@ -429,13 +438,19 @@ export default function Home() {
 
         {/* Center Main Content */}
         <main className="relative z-10 max-w-4xl mx-auto text-center my-auto py-12 space-y-8">
-          <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase leading-none max-w-3xl mx-auto">
+          <motion.h2 
+            initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase leading-none max-w-3xl mx-auto"
+          >
             ORTALAMA YAŞAMDAN KURTUL, <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-200 to-zinc-500">POTANSİYELİNİ ZİRVEYE TAŞ.</span>
-          </h2>
+          </motion.h2>
           
-          <p className="text-xs md:text-sm text-zinc-500 max-w-lg mx-auto font-medium leading-relaxed">
+          <motion.p 
+            initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            className="text-xs md:text-sm text-zinc-500 max-w-lg mx-auto font-medium leading-relaxed"
+          >
             Grind ritmini her an yanında taşı. Gereksiz her şeyi dışarıda bırak; sadece hedeflerin, rutinlerin ve demir gibi bir irade.
-          </p>
+          </motion.p>
 
           {/* Elit Butonlar Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto pt-4">
@@ -575,6 +590,7 @@ export default function Home() {
                 <button
                   key={t.id}
                   onClick={() => setTab(t.id)}
+                  data-cursor="hover"
                   onMouseEnter={() => setHoveredIndex(idx)}
                   onMouseLeave={() => setHoveredIndex(null)}
                   className={`mac-dock-item ${scaleClass} ${tab === t.id ? 'active' : ''}`}
@@ -590,71 +606,27 @@ export default function Home() {
 
         {/* Content with simple render to prevent height bugs (kayma) */}
         <div className="tab-content-wrapper mt-4">
-            {tab === 'dash' && (
-              <div className="tab-panel active">
-                <DashboardTab habits={habits} chart={chart} stats={stats} chad={chad} onToggle={toggle} onShare={() => setShare(true)} />
-              </div>
-            )}
-
-            {tab === 'habits' && (
-              <div className="tab-panel active">
-                <HabitsTab habits={habits} onToggle={toggle} onAdd={addHabit} onDelete={deleteHabit} />
-              </div>
-            )}
-
-            {tab === 'analytics' && (
-              <div className="tab-panel active">
-                <AnalyticsTab habits={habits} chart={chart} stats={stats} />
-              </div>
-            )}
-
-            {tab === 'achieve' && (
-              <div className="tab-panel active">
-                <AchievementsTab habits={habits} chart={chart} stats={stats} achi={achi} chad={chad} />
-              </div>
-            )}
-
-            {tab === 'studio' && (
-              <div className="tab-panel active">
-                <StudioTab />
-              </div>
-            )}
-
-            {tab === 'settings' && (
-              <div className="tab-panel active">
-                <SettingsTab theme={theme} themes={THEMES} onChangeTheme={changeTheme} onReset={resetAll} user={user} wallpaper={wallpaper} setWallpaper={setWallpaper} bgOpacity={bgOpacity} setBgOpacity={setBgOpacity} />
-              </div>
-            )}
-
-            {tab === 'news' && (
-              <div className="tab-panel active">
-                <NewsTab />
-              </div>
-            )}
-
-            {tab === 'music' && (
-              <div className="tab-panel active">
-                <MusicTab />
-              </div>
-            )}
-
-            {tab === 'room' && (
-              <div className="tab-panel active">
-                <RoomTab />
-              </div>
-            )}
-
-            {tab === 'social' && (
-              <div className="tab-panel active">
-                <SocialTab />
-              </div>
-            )}
-
-            {tab === 'grindhub' && (
-              <div className="tab-panel active">
-                <GrindHubTab />
-              </div>
-            )}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={tab}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              {tab === 'dash' && <DashboardTab habits={habits} chart={chart} stats={stats} chad={chad} onToggle={toggle} onShare={() => setShare(true)} />}
+              {tab === 'habits' && <HabitsTab habits={habits} onToggle={toggle} onAdd={addHabit} onDelete={deleteHabit} />}
+              {tab === 'analytics' && <AnalyticsTab habits={habits} chart={chart} stats={stats} />}
+              {tab === 'achieve' && <AchievementsTab habits={habits} chart={chart} stats={stats} achi={achi} chad={chad} />}
+              {tab === 'studio' && <StudioTab />}
+              {tab === 'settings' && <SettingsTab theme={theme} themes={THEMES} onChangeTheme={changeTheme} onReset={resetAll} user={user} wallpaper={wallpaper} setWallpaper={setWallpaper} bgOpacity={bgOpacity} setBgOpacity={setBgOpacity} />}
+              {tab === 'news' && <NewsTab />}
+              {tab === 'music' && <MusicTab />}
+              {tab === 'room' && <RoomTab />}
+              {tab === 'social' && <SocialTab />}
+              {tab === 'grindhub' && <GrindHubTab />}
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         {/* Footer */}

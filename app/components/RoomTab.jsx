@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { db } from '@/lib/firebase';
 import { doc, setDoc, onSnapshot, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
 import { useAuth } from '@/app/components/AuthProvider';
-import { Users, Send, LogOut, Copy, Check, Youtube, Play, MonitorPlay, MessageSquare } from 'lucide-react';
+import { Users, Send, LogOut, Copy, Check, Tv, Play, MonitorPlay, MessageSquare } from 'lucide-react';
 
 export default function RoomTab() {
   const { user } = useAuth();
