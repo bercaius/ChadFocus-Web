@@ -1,5 +1,8 @@
 'use client';
-
+import { useState } from 'react';
+import { auth, db } from '@/lib/firebase';
+import { deleteUser } from 'firebase/auth';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 export default function SettingsTab({ theme, themes, onChangeTheme, onReset, user, wallpaper, setWallpaper, bgOpacity, setBgOpacity }) {
   return (
     <div className="space-y-4">
@@ -96,9 +99,73 @@ export default function SettingsTab({ theme, themes, onChangeTheme, onReset, use
           }} className="w-full p-3 rounded-xl text-xs text-left border" style={{background:'var(--text-dim)', borderColor:'transparent', color:'#CD7F32'}}>
             💾 Verileri Dışa Aktar
           </button>
-          <button onClick={onReset} className="w-full p-3 rounded-xl text-xs text-left border" style={{background:'var(--text-dim)', borderColor:'transparent', color:'var(--neon-red)'}}>
-            ⚠️ Her Şeyi Sıfırla
+          <button onClick={onReset} className="w-full p-3 rounded-xl text-xs text-left border" style={{background:'var(--text-dim)', borderColor:'transparent', color:'var(--neon-orange)'}}>
+            ⚠️ İlerlemeyi Sıfırla
           </button>
+          
+          <button onClick={async () => {
+            if (confirm("Uygulamayı silmek istediğine emin misin? Bu işlem tarayıcıdaki tüm yerel verileri ve önbelleği temizler. Masaüstü sürümündeysen Denetim Masasından kaldırmalısın.")) {
+              localStorage.clear();
+              sessionStorage.clear();
+              if ('serviceWorker' in navigator) {
+                const regs = await navigator.serviceWorker.getRegistrations();
+                for (let r of regs) await r.unregister();
+              }
+              window.location.reload();
+            }
+          }} className="w-full p-3 rounded-xl text-xs text-left border" style={{background:'var(--text-dim)', borderColor:'transparent', color:'var(--neon-red)'}}>
+            🗑️ Uygulamayı (Verileri) Sil
+          </button>
+          
+          <button onClick={async () => {
+            if (confirm("HESABI SİL: Bu işlem geri alınamaz! Buluttaki tüm verilerin ve hesabın kalıcı olarak silinecek. Emin misin?")) {
+              try {
+                if (auth.currentUser) {
+                  await deleteUser(auth.currentUser);
+                  alert("Hesabın başarıyla silindi. Elveda dostum.");
+                  window.location.reload();
+                } else {
+                  alert("Şu an oturum açık değil.");
+                }
+              } catch (e) {
+                console.error("Hesap silme hatası:", e);
+                if (e.code === 'auth/requires-recent-login') {
+                  alert("Güvenlik nedeniyle hesabını silmeden önce çıkış yapıp tekrar giriş yapmalısın.");
+                } else {
+                  alert("Hesap silinirken bir hata oluştu: " + e.message);
+                }
+              }
+            }
+          }} className="w-full p-3 rounded-xl text-xs text-left border border-red-900/50" style={{background:'rgba(255,0,0,0.1)', color:'var(--neon-red)'}}>
+            ☠️ Hesabı Kalıcı Olarak Sil
+          </button>
+        </div>
+      </div>
+
+      {/* Destek / Ticket */}
+      <div className="glass-card rounded-xl p-4" style={{borderColor:'rgba(96,165,250,0.2)'}}>
+        <span className="text-xs font-semibold tracking-wider" style={{color:'var(--text-muted)'}}>DESTEK & İLETİŞİM</span>
+        <div className="mt-3">
+          <button onClick={async () => {
+            const msg = prompt("Admin'e iletmek istediğin mesajı, bug'ı veya talebi yaz:");
+            if (msg && msg.trim()) {
+              try {
+                await addDoc(collection(db, "tickets"), {
+                  uid: user?.uid || 'anonim',
+                  email: user?.email || 'Bilinmiyor',
+                  message: msg,
+                  createdAt: serverTimestamp(),
+                  status: 'open'
+                });
+                alert("Ticket başarıyla Turco Develop stüdyosuna iletildi! En kısa sürede inceleyeceğiz.");
+              } catch (e) {
+                alert("Ticket gönderilemedi. Hata: " + e.message);
+              }
+            }
+          }} className="w-full p-3 rounded-xl text-xs text-left border border-blue-900/50" style={{background:'rgba(96,165,250,0.1)', color:'var(--neon-blue)'}}>
+            📨 Admin'e Ticket (Destek) Aç
+          </button>
+
         </div>
       </div>
 
